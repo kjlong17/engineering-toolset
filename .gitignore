@@ -1,0 +1,18 @@
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+~$*
+
+# One-time handoff notes
+HANDOFF.md
+
+# Never commit keys
+*.pem
+*_deploy
+*_deploy.pub
+id_*
+
+# Local Claude Code settings
+.claude/

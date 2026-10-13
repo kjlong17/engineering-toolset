@@ -1,0 +1,37 @@
+/* About & sources panel. */
+FST.about = function () {
+  const { el } = FST.ui;
+  const rows = Object.values(FST.sources).map((s) => el('tr', null,
+    el('td', null, el('strong', null, s.short)),
+    el('td', null, s.url ? el('a', { href: s.url, rel: 'noopener noreferrer', target: '_blank' }, s.name) : s.name, s.note ? el('p', { class: 'hint' }, s.note) : null),
+    el('td', null, s.edition)));
+  return el('div', { class: 'about' },
+    el('section', null,
+      el('h2', null, 'About these checks'),
+      el('p', null, 'A screening aid for plan reviewers and designers. Each card checks common street geometry, roadside safety and drainage items against the Transportation & Street Technical Standards (TSTS), 2025 edition, and the outside documents the Standards adopt by reference (TSTS §1.8).'),
+      el('p', null, 'Independent tool. Not affiliated with, produced by or endorsed by the City of Franklin, Tennessee.')),
+    el('section', null,
+      el('h3', null, 'How results are decided'),
+      el('ul', null,
+        el('li', null, 'TSTS values come from the adopted Standards and the Typical Street Sections. Where the TSTS text points to another document, that document\'s method is used and cited.'),
+        el('li', null, 'Where a TSTS value and the referenced national value differ, the more restrictive governs (TSTS §1.5). Table 2.3(2) notes a and b also state that current Green Book values supersede the tabulated sight distance and radius values. Those cases show a Note.'),
+        el('li', null, 'AASHTO publications are copyrighted. Green Book values are computed from the published design equations and constants, and cited by section; AASHTO tables are not reproduced. Roadside values are shown as adapted and published by TDOT.'),
+        el('li', null, 'Within State of Tennessee right-of-way, TDOT criteria govern (TSTS §1.8).'))),
+    el('section', null,
+      el('h3', null, 'Sources and editions'),
+      el('div', { class: 'table-scroll' }, el('table', { class: 'src-table' },
+        el('thead', null, el('tr', null, el('th', { scope: 'col' }, 'Short name'), el('th', { scope: 'col' }, 'Document'), el('th', { scope: 'col' }, 'Edition used'))),
+        el('tbody', null, rows)))),
+    el('section', null,
+      el('h3', null, 'Data status'),
+      el('ul', null,
+        el('li', null, el('span', { class: 'flag' }, 'Verify before public release: '), 'TDOT S-CZ-1 clear zone (Table A) and curve factors (Table B); S-PL-1 runout lengths for 20, 25 and 35 mph; S-CZ-1 low-speed urban offsets (4 ft / 6 ft). These were transcribed from drawing text and must be checked against the drawing sheets.'),
+        el('li', null, 'Turn-lane volume warrant charts (TDOT HSAM Figures 3-15 to 3-19) are referenced, not computed.'),
+        el('li', null, 'TSTS Figures 2.3(1), 2.3(3), 2.3(4) and 2.3(5) are reserved in the 2025 edition.'))),
+    el('section', null,
+      el('h3', null, 'Privacy'),
+      el('p', null, 'Everything runs in your browser. No values are sent anywhere. Your selected classification, tab and review comments are kept only in this browser\'s local storage.')),
+    el('section', null,
+      el('h3', null, 'Changelog'),
+      el('ul', null, el('li', null, 'Draft v0.1 — first build: 12 checks for street geometry, roadside safety and drainage (TSTS 2025).'))));
+};
