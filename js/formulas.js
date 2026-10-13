@@ -67,6 +67,12 @@ FST.f = (function () {
   }
   const rmin = (V, e) => (V * V) / (15 * (e + fFor(V)));
 
+  /* Simple circular curve elements (GB §3.3; standard route-surveying relations). R in ft, delta in degrees. */
+  function hcurve(R, delta) {
+    const d = (delta * Math.PI) / 180;
+    return { T: R * Math.tan(d / 2), L: R * d, E: R * (1 / Math.cos(d / 2) - 1), M: R * (1 - Math.cos(d / 2)), LC: 2 * R * Math.sin(d / 2) };
+  }
+
   /* GB §3.3.12, Eq. 3-37: horizontal sightline offset (ft). Angle in degrees. */
   function hso(R, S) {
     const arg = (28.65 * S) / R;
@@ -118,6 +124,10 @@ FST.f = (function () {
     return Math.pow((Q * n) / (C.hec22.ku * Math.pow(Sx, 1.67) * Math.sqrt(SL)), 0.375);
   }
 
+  /* HEC-22 uniform gutter capacity at spread T (ft): Q = (Ku/n) Sx^1.67 SL^0.5 T^2.67. Slopes ft/ft.
+     T is raised to 8/3 (the 2.67 HEC-22 prints) so this is the exact inverse of spread(), which uses 0.375 = 3/8. */
+  const gutterCapacity = (T, n, Sx, SL) => (C.hec22.ku / n) * Math.pow(Sx, 1.67) * Math.sqrt(SL) * Math.pow(T, 8 / 3);
+
   /* Manning full-flow capacity for a circular pipe. D in inches, S in ft/ft. */
   function pipeFull(Din, S, n) {
     const D = Din / 12, A = (Math.PI * D * D) / 4, R = D / 4;
@@ -143,6 +153,13 @@ FST.f = (function () {
     }
     const y = (lo + hi) / 2, f = flow(y);
     return { ratio: y / D, depth: y, V: Q / f.A, surcharged: false, qmax };
+  }
+
+  /* Smallest standard pipe size (in) not below minDia whose Manning full-flow capacity carries Q (cfs).
+     TSTS §3.2.1(3): the design flow may not rise above the inside crown. Returns null if no listed size works. */
+  function pipeSize(Q, S, n, minDia, sizes = C.pipe.sizes) {
+    for (const D of sizes) if (D >= minDia && pipeFull(D, S, n).Q >= Q) return D;
+    return null;
   }
 
   /* Clear zone lookup (TDOT S-CZ-1 Table A). slope: 'f6' | 'f4'. */
@@ -181,7 +198,7 @@ FST.f = (function () {
     return (LA - L2) / (LA / LR);
   }
 
-  return { ssd, ssdDesign, kCrest, kSag, kComfort, kDesign, lengthRequired, vcurve, fFor, rmin, hso, isd,
-    taperTsts, bayTaper, laneDrop, storageUnsig, storageSig, decel, spread, pipeFull, pipeDepth,
+  return { ssd, ssdDesign, kCrest, kSag, kComfort, kDesign, lengthRequired, vcurve, fFor, rmin, hcurve, hso, isd,
+    taperTsts, bayTaper, laneDrop, storageUnsig, storageSig, decel, spread, gutterCapacity, pipeFull, pipeDepth, pipeSize,
     speedBand, clearZone, kcz, runout, lon, ceilTo };
 })();

@@ -105,30 +105,38 @@ FST.ui = (function () {
       }));
   }
 
-  /* ---------- Results ---------- */
+  /* ---------- Results ----------
+     Design values only — the tool computes standards-based values for the inputs; it does not judge a design.
+     { status: 'value', label, value, detail, cite }  a design value
+     { status: 'note' | 'info', label, detail, cite } governing-standard notes and requirements stated in text */
   const STATUS = {
-    pass: { icon: '✓', word: 'Pass' },
-    fail: { icon: '✕', word: 'Fail' },
     note: { icon: '!', word: 'Note' },
     info: { icon: 'i', word: 'Info' }
   };
   function results(list) {
     const ul = el('ul', { class: 'results' });
     for (const r of list) {
+      const cite = r.cite && r.cite.length ? el('p', { class: 'res-cite' }, r.cite.map(citeText).join(' · ')) : null;
+      const detail = r.detail ? el('p', { class: 'res-detail' }, r.detail) : null;
+      if (r.status === 'value') {
+        ul.append(el('li', { class: 'res res-value' },
+          el('div', { class: 'res-body' },
+            el('p', { class: 'res-line' }, el('span', { class: 'res-label' }, r.label), el('span', { class: 'res-num' }, r.value)),
+            detail, cite)));
+        continue;
+      }
       const st = STATUS[r.status] || STATUS.info;
-      ul.append(el('li', { class: `res res-${r.status}` },
+      ul.append(el('li', { class: `res res-${r.status === 'note' ? 'note' : 'info'}` },
         el('span', { class: 'badge', 'aria-hidden': 'true' }, st.icon),
         el('div', { class: 'res-body' },
           el('p', { class: 'res-head' }, el('span', { class: 'res-word' }, st.word + ':'), ' ', r.label),
-          (r.required != null || r.provided != null) ? el('p', { class: 'res-vals' },
-            r.required != null ? el('span', null, el('span', { class: 'k' }, 'Required '), r.required) : null,
-            r.provided != null ? el('span', null, el('span', { class: 'k' }, 'Provided '), r.provided) : null) : null,
-          r.detail ? el('p', { class: 'res-detail' }, r.detail) : null,
-          r.cite && r.cite.length ? el('p', { class: 'res-cite' }, r.cite.map(citeText).join(' · ')) : null)));
+          detail, cite)));
     }
     return ul;
   }
-  const check = (ok, label, required, provided, cite, detail) => ({ status: ok ? 'pass' : 'fail', label, required, provided, cite, detail });
+  const val = (label, value, cite, detail) => ({ status: 'value', label, value, cite, detail });
+  const note = (label, cite, detail) => ({ status: 'note', label, cite, detail });
+  const info = (label, cite, detail) => ({ status: 'info', label, cite, detail });
 
   /* ---------- SVG ---------- */
   const NS = 'http://www.w3.org/2000/svg';
@@ -173,28 +181,29 @@ FST.ui = (function () {
     return api;
   }
 
-  /* Bullet chart: one row per check, allowed range shaded, provided value as a bar with a ✓/✕ mark.
-     rows: { label, value, lo, hi, max, unit, d } — lo/hi may be null. */
-  function bullets(title, rows) {
-    const W = 640, rowH = 46, top = 16, left = 200, right = 560;
+  /* Range chart: one row per design limit; the allowed range is shaded and the limits are labeled.
+     rows: { label, lo, hi, max, unit, d } — lo/hi may be null. */
+  function ranges(title, rows) {
+    const W = 640, rowH = 46, top = 16, left = 200, right = 540;
     const H = top + rows.length * rowH + 10;
-    const desc = rows.map((r) => `${r.label}: ${fmt(r.value, r.d ?? 1)} ${r.unit}, allowed ${r.lo != null ? 'at least ' + fmt(r.lo, r.d ?? 1) : ''}${r.lo != null && r.hi != null ? ' and ' : ''}${r.hi != null ? 'at most ' + fmt(r.hi, r.d ?? 1) : ''}`).join('. ');
+    const span = (r) => r.lo != null && r.hi != null ? (r.lo === r.hi ? `${fmt(r.lo, r.d ?? 1)}` : `${fmt(r.lo, r.d ?? 1)}–${fmt(r.hi, r.d ?? 1)}`) : r.lo != null ? `≥ ${fmt(r.lo, r.d ?? 1)}` : `≤ ${fmt(r.hi, r.d ?? 1)}`;
+    const unit = (r) => (r.unit === 'ft' ? ' ft' : r.unit); // no space before % or °
+    const desc = rows.map((r) => `${r.label}: ${span(r)}${unit(r)}`).join('. ');
     const g = svg(W, H, title, desc);
     rows.forEach((r, i) => {
       const y = top + i * rowH;
-      const max = r.max || Math.max(r.value, r.hi || 0, r.lo || 0) * 1.3 || 1;
+      const max = r.max || Math.max(r.hi || 0, r.lo || 0) * 1.3 || 1;
       const X = (v) => left + (Math.min(Math.max(v, 0), max) / max) * (right - left);
-      const ok = (r.lo == null || r.value >= r.lo - 1e-9) && (r.hi == null || r.value <= r.hi + 1e-9);
       g.text(left - 10, y + 17, r.label, 't', { 'text-anchor': 'end' });
       g.rect(left, y + 6, right - left, 16, 'pave-2');
-      g.rect(X(r.lo ?? 0), y + 6, X(r.hi ?? max) - X(r.lo ?? 0), 16, 'ok-fill');
-      g.rect(left, y + 10, X(r.value) - left, 8, ok ? 'car' : 'hazard');
-      for (const lim of [r.lo, r.hi]) {
+      const a = X(r.lo ?? 0), b = X(r.hi ?? max);
+      g.rect(a, y + 6, Math.max(b - a, 3), 16, 'ok-fill');
+      for (const lim of new Set([r.lo, r.hi])) {
         if (lim == null) continue;
         g.line(X(lim), y + 2, X(lim), y + 26, 'edge');
         g.text(X(lim), y + 38, fmt(lim, r.d ?? 1), 't t-sm', { 'text-anchor': 'middle' });
       }
-      g.text(right + 10, y + 18, `${ok ? '✓' : '✕'} ${fmt(r.value, r.d ?? 1)} ${r.unit}`, `t t-b`);
+      g.text(right + 10, y + 18, `${span(r)}${unit(r)}`, 't t-b');
     });
     return g;
   }
@@ -204,5 +213,5 @@ FST.ui = (function () {
     return el('ul', { class: 'legend' }, items.map(([cls, label]) => el('li', null, el('span', { class: `swatch ${cls}`, 'aria-hidden': 'true' }), label)));
   }
 
-  return { el, fmt, ft, pct, select, segmented, range, toggle, group, chips, citeText, results, check, svg, legend, bullets, nextId };
+  return { el, fmt, ft, pct, select, segmented, range, toggle, group, chips, citeText, results, val, note, info, svg, legend, ranges, nextId };
 })();

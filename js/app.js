@@ -1,4 +1,4 @@
-/* App shell: global street classification, tabs, card rendering, review comments, disclaimer. */
+/* App shell: global street classification, tabs, card rendering, disclaimer. */
 window.FST = window.FST || {};
 (function () {
   const { el } = FST.ui;
@@ -18,7 +18,7 @@ window.FST = window.FST || {};
   FST.cardDefs = [];
   FST.card = (def) => FST.cardDefs.push(def);
 
-  const state = { classId: store.get('class', 'minCol'), tab: store.get('tab', 'align'), comments: store.get('comments', []) };
+  const state = { classId: store.get('class', 'minCol'), tab: store.get('tab', 'align') };
   const ctx = () => ({ cls: FST.classes.find((c) => c.id === state.classId), C: FST.criteria, f: FST.f, ui: FST.ui });
 
   /* ---------- Card rendering ---------- */
@@ -30,12 +30,9 @@ window.FST = window.FST || {};
     const viz = el('figure', { class: 'viz', tabindex: '0', 'aria-label': `${def.title} diagram` });
     const out = el('div', { class: 'out', 'aria-live': 'polite' });
     const basis = el('div', { class: 'basis-body' });
-    const addBtn = el('button', { type: 'button', class: 'btn' }, 'Add findings to review comments');
-    let last = null;
 
     function refresh() {
       const r = def.evaluate(ctx(), s);
-      last = r;
       viz.replaceChildren(r.svg ? r.svg.root || r.svg : '', r.legend || '', r.caption ? el('figcaption', null, r.caption) : '');
       out.replaceChildren(FST.ui.results(r.results));
       basis.replaceChildren(...(r.basis || []).map(([k, v]) => el('div', { class: 'basis-row' }, el('dt', null, k), el('dd', null, v))));
@@ -48,15 +45,6 @@ window.FST = window.FST || {};
       if (opts.rebuild) buildFields();
       refresh();
     }
-    addBtn.addEventListener('click', () => {
-      if (!last) return;
-      const items = last.results.filter((r) => r.status === 'fail' || r.status === 'note');
-      const list = items.length ? items : [{ status: 'pass', label: 'All checks shown passed', cite: def.cites }];
-      for (const r of list) addComment(def.title, r);
-      addBtn.textContent = `Added ${list.length} item${list.length === 1 ? '' : 's'}`;
-      setTimeout(() => (addBtn.textContent = 'Add findings to review comments'), 1800);
-    });
-
     buildFields();
     refresh();
     return el('article', { class: 'card', id: 'card-' + def.id, 'aria-labelledby': headId },
@@ -65,35 +53,9 @@ window.FST = window.FST || {};
         el('p', { class: 'intro' }, def.intro),
         FST.ui.chips(def.cites)),
       el('div', { class: 'card-grid' }, inputs, viz),
-      el('h3', { class: 'out-title' }, 'Results'),
+      el('h3', { class: 'out-title' }, 'Design values'),
       out,
-      el('details', { class: 'basis' }, el('summary', null, 'Basis — how this is computed'), el('dl', null, basis)),
-      el('div', { class: 'card-actions' }, addBtn));
-  }
-
-  /* ---------- Review comments ---------- */
-  function addComment(card, r) {
-    const cites = (r.cite || []).map(FST.ui.citeText).join('; ');
-    const vals = [r.required != null ? `required ${r.required}` : null, r.provided != null ? `provided ${r.provided}` : null].filter(Boolean).join(', ');
-    const word = { pass: 'PASS', fail: 'REVISE', note: 'NOTE', info: 'INFO' }[r.status];
-    state.comments.push(`${word} — ${card}: ${r.label}${vals ? ` (${vals})` : ''}.${r.detail ? ' ' + r.detail : ''}${cites ? ` [${cites}]` : ''}`);
-    store.set('comments', state.comments);
-    renderComments();
-  }
-  function renderComments() {
-    const list = document.getElementById('comment-list');
-    const count = document.getElementById('comment-count');
-    count.textContent = state.comments.length;
-    list.replaceChildren(...(state.comments.length
-      ? state.comments.map((t, i) => el('li', null, el('span', null, t),
-          el('button', { type: 'button', class: 'link', 'aria-label': `Remove comment ${i + 1}`, onclick: () => { state.comments.splice(i, 1); store.set('comments', state.comments); renderComments(); } }, 'Remove')))
-      : [el('li', { class: 'empty' }, 'No comments yet. Use “Add findings to review comments” on any card.')]));
-  }
-  function commentsText() {
-    const cls = ctx().cls;
-    return [`Plan review comments — ${cls.name} (design speed ${cls.designSpeed} mph)`,
-      `Basis: ${FST.sources.tsts.name}, ${FST.sources.tsts.edition}`, '',
-      ...state.comments.map((t, i) => `${i + 1}. ${t}`)].join('\n');
+      el('details', { class: 'basis' }, el('summary', null, 'Basis — how this is computed'), el('dl', null, basis)));
   }
 
   /* ---------- Tabs ---------- */
@@ -152,32 +114,9 @@ window.FST = window.FST || {};
     sel.addEventListener('change', () => {
       state.classId = sel.value; store.set('class', sel.value);
       renderContext(); renderPanels();
-      document.getElementById('ctx-status').textContent = `Street classification set to ${ctx().cls.name}. All cards updated to its defaults.`;
+      document.getElementById('ctx-status').textContent = `Street classification set to ${ctx().cls.name}. All tools updated to its defaults.`;
     });
-    renderContext(); renderTabs(); renderPanels(); renderComments();
-
-    const drawer = document.getElementById('comments');
-    const toggleBtn = document.getElementById('comments-toggle');
-    const setDrawer = (open) => { drawer.hidden = !open; toggleBtn.setAttribute('aria-expanded', String(open)); if (open) drawer.querySelector('h2').focus(); };
-    toggleBtn.addEventListener('click', () => setDrawer(drawer.hidden));
-    document.getElementById('comments-close').addEventListener('click', () => { setDrawer(false); toggleBtn.focus(); });
-    document.getElementById('comments-copy').addEventListener('click', async (e) => {
-      const txt = commentsText();
-      try { await navigator.clipboard.writeText(txt); e.target.textContent = 'Copied'; }
-      catch (err) {
-        const ta = el('textarea', { class: 'sr-only' }); ta.value = txt; document.body.append(ta); ta.select();
-        try { document.execCommand('copy'); e.target.textContent = 'Copied'; } catch (e2) { e.target.textContent = 'Copy failed'; }
-        ta.remove();
-      }
-      setTimeout(() => (e.target.textContent = 'Copy as text'), 1800);
-    });
-    document.getElementById('comments-print').addEventListener('click', () => {
-      document.getElementById('print-comments').textContent = commentsText();
-      window.print();
-    });
-    document.getElementById('comments-clear').addEventListener('click', () => {
-      if (!state.comments.length || confirm('Clear all review comments?')) { state.comments = []; store.set('comments', []); renderComments(); }
-    });
+    renderContext(); renderTabs(); renderPanels();
 
     const dlg = document.getElementById('disclaimer');
     document.getElementById('disclaimer-ok').addEventListener('click', () => { store.set('ack', 1); dlg.close(); });

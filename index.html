@@ -3,28 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Street Review Checks</title>
-  <meta name="description" content="Plan review checks for street geometry, roadside safety and stormwater, based on the Transportation & Street Technical Standards (TSTS, 2025 edition) and referenced TDOT, AASHTO, MUTCD and FHWA criteria.">
+  <title>Civil Engineering Tools</title>
+  <meta name="description" content="Engineering reference: design values for street geometry, roadside safety and stormwater from the Transportation & Street Technical Standards (TSTS, 2025 edition) and referenced TDOT, AASHTO, MUTCD and FHWA criteria.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23175e54'/%3E%3Cpath d='M9 26 L14 6 M23 26 L18 6' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M16 9v3M16 16v3M16 23v3' stroke='%23f5c84c' stroke-width='2'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <a class="skip" href="#panels">Skip to checks</a>
+  <a class="skip" href="#panels">Skip to tools</a>
 
   <header class="site-head">
     <div class="wrap head-row">
       <div class="brand">
-        <p class="eyebrow">Independent screening aid</p>
-        <h1>Street Review Checks</h1>
-        <p class="edition">Checks against the Transportation &amp; Street Technical Standards (TSTS) — 2025 edition</p>
+        <p class="eyebrow">Independent engineering reference</p>
+        <h1>Civil Engineering Tools</h1>
+        <p class="edition">Design values from the Transportation &amp; Street Technical Standards (TSTS) — 2025 edition</p>
       </div>
       <div class="head-actions">
         <button type="button" class="btn ghost" id="disclaimer-open">Terms of use</button>
-        <button type="button" class="btn" id="comments-toggle" aria-expanded="false" aria-controls="comments">
-          Review comments <span class="count" id="comment-count">0</span>
-        </button>
       </div>
     </div>
   </header>
@@ -39,47 +36,31 @@
         <div><dt>Speeds</dt><dd id="ctx-speed"></dd></div>
         <div><dt>Typical section</dt><dd id="ctx-meta"></dd></div>
       </dl>
-      <p class="hint" id="ctx-help">Choosing a classification fills every check with its TSTS defaults. Change only what differs on the plans.</p>
+      <p class="hint" id="ctx-help">Choosing a classification fills every tool with its TSTS defaults. Change any input to match your design.</p>
       <p class="sr-only" role="status" id="ctx-status"></p>
     </div>
   </div>
 
-  <nav class="tabs" aria-label="Check categories">
-    <div class="wrap"><div role="tablist" id="tabbar" aria-label="Check categories"></div></div>
+  <nav class="tabs" aria-label="Tool categories">
+    <div class="wrap"><div role="tablist" id="tabbar" aria-label="Tool categories"></div></div>
   </nav>
 
   <main class="wrap" id="panels" tabindex="-1"></main>
 
-  <aside id="comments" class="drawer" hidden aria-labelledby="comments-title">
-    <div class="drawer-head">
-      <h2 id="comments-title" tabindex="-1">Review comments</h2>
-      <button type="button" class="btn ghost" id="comments-close">Close</button>
-    </div>
-    <p class="hint">Findings you add from any card. Copy them into your review letter, or print a summary.</p>
-    <ol id="comment-list" class="comment-list"></ol>
-    <div class="drawer-actions">
-      <button type="button" class="btn" id="comments-copy">Copy as text</button>
-      <button type="button" class="btn ghost" id="comments-print">Print</button>
-      <button type="button" class="btn ghost danger" id="comments-clear">Clear</button>
-    </div>
-  </aside>
-
-  <pre id="print-comments" class="print-only"></pre>
-
   <footer class="site-foot">
     <div class="wrap">
-      <p><strong>Screening aid only.</strong> These checks do not replace engineering judgment, a sealed design, or review by the approving agency. The adopted Standards and the approving agency's determinations govern. Where standards differ, the more restrictive provision applies (TSTS §1.5).</p>
+      <p><strong>Engineering reference only.</strong> Results are design values computed from the cited standards for the inputs entered. They do not replace engineering judgment, a sealed design, or review by the approving agency. The adopted Standards and the approving agency's determinations govern. Where standards differ, the more restrictive provision applies (TSTS §1.5).</p>
       <p>Independent tool. Not affiliated with, produced by or endorsed by the City of Franklin, Tennessee.</p>
       <p>No data you enter leaves this page. Nothing is tracked or stored on a server.</p>
     </div>
   </footer>
 
   <dialog id="disclaimer" aria-labelledby="disclaimer-title">
-    <h2 id="disclaimer-title">Before you use these checks</h2>
-    <p>This tool is a screening aid for reviewing street plans against the Transportation &amp; Street Technical Standards (TSTS, 2025 edition) and the TDOT, AASHTO, MUTCD and FHWA criteria they reference.</p>
+    <h2 id="disclaimer-title">Before you use these tools</h2>
+    <p>These tools are an engineering reference. For the inputs you enter, they compute design values from the Transportation &amp; Street Technical Standards (TSTS, 2025 edition) and the TDOT, AASHTO, MUTCD and FHWA criteria they reference.</p>
     <ul>
-      <li>It is an independent tool. It is not affiliated with, produced by or endorsed by any city or agency that adopted the Standards.</li>
-      <li>It does not replace engineering judgment, a sealed design, or the approving agency's plan review.</li>
+      <li>This is an independent tool. It is not affiliated with, produced by or endorsed by any city or agency that adopted the Standards.</li>
+      <li>It does not replace engineering judgment, a sealed design, or the approving agency's review.</li>
       <li>The adopted Standards, and determinations by the approving agency, control over any result shown here.</li>
       <li>Results are provided without warranty. Check every value against the cited source.</li>
     </ul>

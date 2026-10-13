@@ -1,5 +1,5 @@
 /*
- * Criteria registry — every number the tool checks against lives here, with its source.
+ * Criteria registry — every design value the tools use lives here, with its source.
  * UI and formula code must not hard-code design values; read them from FST.criteria.
  *
  * Edition policy: Transportation & Street Technical Standards (TSTS), 2025 edition
@@ -264,7 +264,8 @@ FST.criteria = {
   },
   rationalMaxAcres: 100,
   /* Ch. 3 §3.2.1(3) and Ch. 7 §7.3 storm pipe */
-  pipe: { minDia: 15, minSlope: 0.50, minCover: 24, manningN: 0.013, material: 'RCP, Class III' },
+  pipe: { minDia: 15, minSlope: 0.50, minCover: 24, manningN: 0.013, material: 'RCP, Class III',
+    sizes: [15, 18, 21, 24, 27, 30, 36, 42, 48, 54, 60, 66, 72] },  // standard RCP diameters (ASTM C76)
   bridgeFreeboard: 1.0,
 
   /* AASHTO Green Book 7th ed. design constants (equations cited, tables not reproduced) */

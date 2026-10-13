@@ -7,11 +7,11 @@ FST.about = function () {
     el('td', null, s.edition)));
   return el('div', { class: 'about' },
     el('section', null,
-      el('h2', null, 'About these checks'),
-      el('p', null, 'A screening aid for plan reviewers and designers. Each card checks common street geometry, roadside safety and drainage items against the Transportation & Street Technical Standards (TSTS), 2025 edition, and the outside documents the Standards adopt by reference (TSTS §1.8).'),
+      el('h2', null, 'About these tools'),
+      el('p', null, 'An engineering reference for street design. For the inputs you enter, each card gives the standards-based design values for common street geometry, roadside safety and drainage items, from the Transportation & Street Technical Standards (TSTS), 2025 edition, and the outside documents the Standards adopt by reference (TSTS §1.8).'),
       el('p', null, 'Independent tool. Not affiliated with, produced by or endorsed by the City of Franklin, Tennessee.')),
     el('section', null,
-      el('h3', null, 'How results are decided'),
+      el('h3', null, 'How design values are found'),
       el('ul', null,
         el('li', null, 'TSTS values come from the adopted Standards and the Typical Street Sections. Where the TSTS text points to another document, that document\'s method is used and cited.'),
         el('li', null, 'Where a TSTS value and the referenced national value differ, the more restrictive governs (TSTS §1.5). Table 2.3(2) notes a and b also state that current Green Book values supersede the tabulated sight distance and radius values. Those cases show a Note.'),
@@ -30,8 +30,10 @@ FST.about = function () {
         el('li', null, 'TSTS Figures 2.3(1), 2.3(3), 2.3(4) and 2.3(5) are reserved in the 2025 edition.'))),
     el('section', null,
       el('h3', null, 'Privacy'),
-      el('p', null, 'Everything runs in your browser. No values are sent anywhere. Your selected classification, tab and review comments are kept only in this browser\'s local storage.')),
+      el('p', null, 'Everything runs in your browser. No values are sent anywhere. Your selected classification and tab are kept only in this browser\'s local storage.')),
     el('section', null,
       el('h3', null, 'Changelog'),
-      el('ul', null, el('li', null, 'Draft v0.1 — first build: 12 checks for street geometry, roadside safety and drainage (TSTS 2025).'))));
+      el('ul', null,
+        el('li', null, 'Draft v0.2 — reworked as an engineering reference: each card gives design values for its inputs; pass/fail checks and review comments removed.'),
+        el('li', null, 'Draft v0.1 — first build: 12 cards for street geometry, roadside safety and drainage (TSTS 2025).'))));
 };

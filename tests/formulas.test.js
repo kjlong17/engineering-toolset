@@ -37,6 +37,14 @@
   eq('Manning 15 in @ 0.5% n=0.013 full Q', f.pipeFull(15, 0.005, 0.013).Q, 4.57, 0.05);
   eq('Depth ratio at Q = Qfull/2 (18 in) ≈ 0.50', f.pipeDepth(18, 0.01, 0.013, f.pipeFull(18, 0.01, 0.013).Q / 2).ratio, 0.50, 0.03);
   eq('Spread Q=2 n=.016 Sx=.02 SL=.01', f.spread(2, 0.016, 0.02, 0.01), 9.39, 0.05);
+  eq('Gutter capacity is the inverse of spread', f.gutterCapacity(f.spread(2, 0.016, 0.02, 0.01), 0.016, 0.02, 0.01), 2, 1e-6);
+  eq('Pipe size Q=10 cfs @ 1% (18 in carries 10.5)', f.pipeSize(10, 0.01, 0.013, 15), 18);
+  eq('Pipe size Q=4.5 cfs @ 0.5% (15 in carries 4.57)', f.pipeSize(4.5, 0.005, 0.013, 15), 15);
+  eq('Pipe size respects upstream minimum 24 in', f.pipeSize(1, 0.01, 0.013, 24), 24);
+  // Curve elements, R = 1000 ft, Δ = 30°
+  const hc = f.hcurve(1000, 30);
+  eq('Curve T', hc.T, 267.95, 0.01); eq('Curve L', hc.L, 523.60, 0.01); eq('Curve E', hc.E, 35.28, 0.01);
+  eq('Curve M', hc.M, 34.07, 0.01); eq('Curve LC', hc.LC, 517.64, 0.01);
   // Roadside
   eq('Clear zone 45-50 mph >6000 5:1–4:1 (upper)', f.clearZone(45, '>6000', 'f4').high, 28);
   eq('Kcz 50 mph R=820', f.kcz(50, 820), 1.4);
