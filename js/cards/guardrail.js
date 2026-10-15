@@ -77,7 +77,13 @@ FST.card({
           LA = Math.min(LA, Lc);
           lonVal = Math.ceil(f.lon(LA, s.L2, LR));
           R.push(ui.val('Runout length (LR)', ui.ft(LR), ['spl1']));
-          R.push(ui.val('Length of need ahead of the hazard (approach side)', ui.ft(lonVal), ['spl1'], `LON = (LA − L2)/(LA/LR) = (${ui.fmt(LA, 1)} − ${s.L2})/(${ui.fmt(LA, 1)}/${LR}). LA is limited to the clear zone. Length of need begins at the third post of the terminal. Add the far-side length for two-way traffic, measured from the centerline.`));
+          if (s.hazard !== 'none' && s.L2 >= s.offset) {
+            lonVal = null;
+            R.push(ui.note(`The barrier face (L2 = ${ui.ft(s.L2, 1)}) must be in front of the hazard (${ui.ft(s.offset, 1)} from the edge of the travel lane) — move the barrier closer to the road`, ['spl1']));
+          } else if (lonVal <= 0) {
+            lonVal = null;
+            R.push(ui.note('LA is not greater than L2, so the equation gives no length of need — check the hazard extent and barrier offset', ['spl1']));
+          } else R.push(ui.val('Length of need ahead of the hazard (approach side)', ui.ft(lonVal), ['spl1'], `LON = (LA − L2)/(LA/LR) = (${ui.fmt(LA, 1)} − ${s.L2})/(${ui.fmt(LA, 1)}/${LR}). LA is limited to the clear zone. Length of need begins at the third post of the terminal. Add the far-side length for two-way traffic, measured from the centerline.`));
           if (s.L2 > 0) R.push(ui.info('Keep about 5 ft of deflection space behind W-beam guardrail; use concrete barrier where the object is within 5 ft of the shoulder', ['rdg302']));
         }
         R.push(ui.info('Hardware: TDOT/FHWA crash-tested systems only; wood guardrail is prohibited; type and location approved by the agency', ['s2318', 's2319']));

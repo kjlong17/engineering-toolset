@@ -274,7 +274,8 @@ FST.criteria = {
     h1: 3.5, h2: 2.0, headlight: 2.0, beam: 1.0, // §3.4.6 vertical curves
     kCrestDen: 2158,                         // 200(√h1+√h2)²
     // §3.3 low-speed urban side friction (≤45 mph) and high-speed (50 mph)
-    fLowSpeed: { 15: 0.32, 20: 0.27, 25: 0.23, 30: 0.20, 35: 0.18, 40: 0.16, 45: 0.15, 50: 0.14 },
+    // Maximum side friction: low-speed urban values to 45 mph, high-speed values from 50 mph (GB §3.3).
+    fSide: { 15: 0.32, 20: 0.27, 25: 0.23, 30: 0.20, 35: 0.18, 40: 0.16, 45: 0.15, 50: 0.14, 55: 0.13, 60: 0.12 },
     ncSlope: -0.02,
     // §9.5.3 intersection sight distance time gaps (s), by case and design vehicle
     isd: {
@@ -360,7 +361,7 @@ FST.cites = {
   s15: ['tsts', '§1.5'],
   s237: ['tsts', '§2.3.7'], s238: ['tsts', '§2.3.8'], s2387: ['tsts', '§2.3.8(7)'], s2388: ['tsts', '§2.3.8(8)'],
   s239: ['tsts', '§2.3.9'], s2397: ['tsts', '§2.3.9(7)'], s2310: ['tsts', '§2.3.10'], s2311: ['tsts', '§2.3.11'],
-  s2313: ['tsts', '§2.3.13'], s23138: ['tsts', '§2.3.13(8)'], s23139: ['tsts', '§2.3.13(9)'], s231310: ['tsts', '§2.3.13(10)'],
+  s2313: ['tsts', '§2.3.13'], s23137: ['tsts', '§2.3.13(7)'], s23138: ['tsts', '§2.3.13(8)'], s23139: ['tsts', '§2.3.13(9)'], s231310: ['tsts', '§2.3.13(10)'],
   s231311: ['tsts', '§2.3.13(11)'], s2315: ['tsts', '§2.3.15'], s2316: ['tsts', '§2.3.16'], s2318: ['tsts', '§2.3.18'],
   s2319: ['tsts', '§2.3.19'], s2321: ['tsts', '§2.3.21'], s2323: ['tsts', '§2.3.23'],
   ts: ['tsd', 'TS-1 to TS-7'],

@@ -9,11 +9,11 @@ FST.card({
     const u = c.ui;
     return [
       u.range({ label: 'Major street design speed', min: 15, max: 60, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v), hint: 'Defaults to the selected classification. Use the speed of the street being entered.' }),
-      u.segmented({ label: 'Maneuver', value: s.kase, onChange: (v) => set('kase', v), options: [
+      u.segmented({ label: 'Maneuver', value: s.kase, onChange: (v) => set('kase', v, { rebuild: true }), options: [
         { value: 'B1', label: 'Left from stop' }, { value: 'B2', label: 'Right from stop' }, { value: 'B3', label: 'Crossing' }, { value: 'F', label: 'Left from major' }] }),
       u.segmented({ label: 'Design vehicle', value: s.veh, onChange: (v) => set('veh', v), options: [
         { value: 'P', label: 'Passenger car' }, { value: 'SU', label: 'Single-unit truck' }, { value: 'WB', label: 'Combination truck' }] }),
-      u.range({ label: 'Additional lanes crossed (beyond one)', min: 0, max: 4, step: 1, value: s.lanes, unit: 'lanes', onChange: (v) => set('lanes', v), hint: 'Count medians wider than a lane as a lane. For left turns from the major street, count opposing lanes beyond one.' }),
+      s.kase === 'B2' ? null : u.range({ label: 'Additional lanes crossed (beyond one)', min: 0, max: 4, step: 1, value: s.lanes, unit: 'lanes', onChange: (v) => set('lanes', v), hint: 'Count medians wider than a lane as a lane. For left turns from the major street, count opposing lanes beyond one.' }),
       s.kase !== 'F' ? u.range({ label: 'Upgrade on the stopped approach', min: 0, max: 10, step: 0.5, value: s.grade, unit: '%', onChange: (v) => set('grade', v) }) : null
     ];
   },
@@ -75,7 +75,7 @@ FST.card({
       results: R,
       basis: [
         ['Equation', 'AASHTO ISD = 1.47 · V(major) · tg, rounded up to 5 ft.'],
-        ['Time gaps (tg)', `${cdef.label}: passenger car ${cdef.P} s, single-unit truck ${cdef.SU} s, combination truck ${cdef.WB} s. Add ${cdef.perLane.P} s (car) or ${cdef.perLane.SU} s (truck) per additional lane crossed.`],
+        ['Time gaps (tg)', `${cdef.label}: passenger car ${cdef.P} s, single-unit truck ${cdef.SU} s, combination truck ${cdef.WB} s. ${cdef.perLane.P ? `Add ${cdef.perLane.P} s (car) or ${cdef.perLane.SU} s (truck) per additional lane crossed.` : 'No adjustment for additional lanes.'}`],
         ['Approach grade', s.kase === 'F' ? 'Not applied for left turns from the major street.' : `Add ${cdef.gradePerPct} s for each percent of upgrade above 3% on the stopped approach.`],
         ['TSTS requirements', 'TSTS §2.3.10: sight distance per the Green Book; 24 in obstruction height above flow line; sight distance easements on plan and profile sheets.']
       ]

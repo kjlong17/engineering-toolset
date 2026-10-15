@@ -59,7 +59,7 @@ FST.card({
     }
     R.push(ui.val(`Maximum tangent grade, ${cls.name}`, ui.pct(cls.maxGrade, 0), ['t235']));
     // Steepest downgrade for either direction of travel.
-    const down = Math.min(s.g2, -s.g1, 0);
+    const down = -Math.max(Math.abs(s.g1), Math.abs(s.g2));
     if (down < -3) R.push(ui.info(`On a ${ui.pct(Math.abs(down), 1)} downgrade, AASHTO stopping sight distance increases to ${ui.ft(f.ssdDesign(s.V, down))}`, ['gbSsd']));
 
     const vc = f.vcurve(s.g1, s.g2, Math.max(Luse, 1), s.pviSta, s.pviElev);

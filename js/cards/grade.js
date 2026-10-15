@@ -3,7 +3,7 @@ FST.card({
   id: 'grade', tab: 'align',
   title: 'Grades, grade breaks and cross slope',
   intro: 'Gives the profile grade limits for the classification, including the flatter grade near a signal and within intersections and cul-de-sacs, plus grade breaks, minimum gutter grade and pavement cross slope.',
-  cites: ['t232', 't235', 's239', 's23138', 's2387', 's237'],
+  cites: ['t232', 't235', 's239', 's23137', 's2387', 's237'],
   defaults: () => ({ work: 'new', cds: false }),
   fields(c, s, set) {
     const u = c.ui, cls = c.cls;
@@ -24,7 +24,7 @@ FST.card({
     const cds = s.cds && cls.cdsAllowed;
     add('Centerline grade', null, cls.maxGrade, ['t232', 't235'], 12);
     if (cls.signalApproach) add(`Within ${cls.signalApproach.length} ft of a signal`, null, cls.signalApproach.grade, ['t235'], 10);
-    add('Within an intersection', null, C.intersectionMaxGrade, ['s23138'], 8);
+    add('Within an intersection', null, C.intersectionMaxGrade, ['s23137'], 8);
     if (cds) add('Centerline grade in cul-de-sac bulb', null, C.cdsMaxGrade, ['s239', 't235'], 10);
     add(cds ? 'Gutter grade in cul-de-sac bulb' : 'Gutter flow-line grade', cds ? C.gutterMinCds : cls.minGutter, null, ['t232', 's239'], 3,
       cls.minGutterNote && !cds ? `Table 2.3(2) lists ${cls.minGutterNote}% for this classification.` : null);

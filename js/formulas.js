@@ -54,7 +54,7 @@ FST.f = (function () {
 
   /* GB §3.3, Eq. 3-8: R = V² / 15(e + f). e and f in ft/ft. */
   function fFor(V) {
-    const t = C.gb.fLowSpeed;
+    const t = C.gb.fSide;
     const keys = Object.keys(t).map(Number).sort((a, b) => a - b);
     if (V <= keys[0]) return t[keys[0]];
     if (V >= keys[keys.length - 1]) return t[keys[keys.length - 1]];

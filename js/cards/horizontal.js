@@ -39,22 +39,25 @@ FST.card({
     if (rTsts != null && rTsts < rGB) R.push(ui.note(`TSTS minimum radius (${rTsts} ft) is below the AASHTO value (${rGB} ft) — AASHTO governs`, ['t232b', 's15']));
     if (aReq) R.push(ui.val(`Minimum arc length (Δ ≤ 10°, ${s.use === 'res' ? 'residential' : 'commercial / industrial'})`, ui.ft(aReq), ['t234']));
     if (s.e !== 'nc' && s.V <= 30) R.push(ui.note('Superelevation is not typically used at design speeds of 30 mph or less', ['s2388']));
-    if (s.e !== 'nc' && s.V >= 50) R.push(ui.note('At 50 mph and above, AASHTO distributes e and f by Method 5 — for radii above the minimum, take e from the GB §3.3 superelevation tables', ['gbHc']));
+    if (s.V >= 50) R.push(ui.note(s.e === 'nc'
+      ? 'At 50 mph and above, AASHTO sets the smallest radius allowed on normal crown from the Method 5 superelevation tables (GB §3.3), which is much larger than the radius shown — check those tables'
+      : 'At 50 mph and above, AASHTO distributes e and f by Method 5 — for radii above the minimum, take e from the GB §3.3 superelevation tables', ['gbHc']));
     if (s.e !== 'nc') R.push(ui.info('Use the TDOT 50/50 split of the superelevation transition about the tangent point; gutters must be inflow type', ['s2388']));
 
     const tReq = s.pair === 'broken' ? 2 * cls.minTangent : cls.minTangent;
     const tLabel = { reverse: 'Minimum tangent between reverse curves', broken: 'Minimum tangent between same-direction (broken-back) curves', intersection: 'Minimum tangent on the minor leg at an intersection' }[s.pair];
     R.push(ui.val(tLabel, ui.ft(tReq), ['t232', 's238'], s.pair === 'intersection' ? 'Measured from the nearest gutter flow line of the intersected street to the PC. Departure angle may not exceed 10° along the tangent.' : null));
-    if (s.compound) R.push(ui.val('Other radius of the compound curve (ratio ≤ 1.5 preferred)', `${ui.fmt(Math.ceil(Rd / 1.5))}–${ui.fmt(Math.floor(Rd * 1.5))} ft`, ['s238'], `For a ${ui.ft(Rd)} radius, and never below the ${ui.ft(rMin)} minimum.`));
+    if (s.compound) R.push(ui.val('Other radius of the compound curve (ratio ≤ 1.5 preferred)', `${ui.fmt(Math.max(rMin, Math.ceil(Rd / 1.5)))}–${ui.fmt(Math.floor(Rd * 1.5))} ft`, ['s238'], `For a ${ui.ft(Rd)} radius, and never below the ${ui.ft(rMin)} minimum.`));
 
     const hc = f.hcurve(Rd, s.delta);
     R.push(ui.val('Curve elements', `R ${ui.fmt(Rd)} · T ${ui.fmt(hc.T, 2)} · L ${ui.fmt(hc.L, 2)} ft`, ['gbHc'],
       `External E = ${ui.fmt(hc.E, 2)} ft; middle ordinate M = ${ui.fmt(hc.M, 2)} ft; long chord LC = ${ui.fmt(hc.LC, 2)} ft.${s.R && s.R < rMin ? ' The entered radius is below the minimum, so the minimum is used.' : ''}`));
     const sGB = f.ssdDesign(s.V);
     const S = Math.max(sGB, atClass ? cls.ssd : 0);
-    const mReq = f.hso(Rd, S);
+    const Rin = Rd - (cls.lane || 12) / 2; // inside-lane centerline on a two-lane street
+    const mReq = f.hso(Rin, S);
     R.push(ui.val('Horizontal sightline offset to keep clear', ui.ft(mReq, 1), ['gbHso'],
-      `For SSD = ${S} ft on R = ${ui.fmt(Rd)} ft, measured from the centerline of the inside lane. Keep this band clear above 2 ft; a sight distance easement may be needed (§2.3.10(3)).`));
+      `For SSD = ${S} ft, measured from the centerline of the inside lane (R = ${ui.fmt(Rin, 1)} ft).${S > hc.L ? ' Sight distance is longer than the curve, so this overstates the offset (conservative).' : ''} Keep this band clear above 2 ft; a sight distance easement may be needed (§2.3.10(3)).`));
 
     // ---- Diagram: plan view ----
     const W = 640, H = 300;
@@ -91,7 +94,7 @@ FST.card({
       legend: ui.legend([['ok', 'Design curve'], ['tri', 'Sightline band to keep clear'], ['req', 'Inside edge of band']]),
       results: R,
       basis: [
-        ['Minimum radius', 'AASHTO R = V² / [15(e + f)]. Normal crown uses e = −0.02 (adverse crown). Side friction f uses AASHTO low-speed urban values for ≤ 45 mph. TSTS Table 2.3(2) values apply when the design speed matches the classification; the larger governs.'],
+        ['Minimum radius', 'AASHTO R = V² / [15(e + f)]. Normal crown uses e = −0.02 (adverse crown). Side friction f uses AASHTO low-speed urban values up to 45 mph and high-speed values from 50 mph. TSTS Table 2.3(2) values apply when the design speed matches the classification; the larger governs.'],
         ['Tangents', `Table 2.3(2) minimum tangent: ${cls.minTangent} ft. Same-direction curves need 2× (§2.3.8(2)(c)). Compound curve radius ratio preferably ≤ 1.5 (§2.3.8).`],
         ['Small deflections', 'Table 2.3(4) minimum arc length for Δ ≤ 10°: local residential 100 ft, local commercial 200 ft, minor collector 250 ft, major collector 250/300 ft, minor arterial 300 ft, major arterial 400 ft. Radius = arc × 180 / (π·Δ).'],
         ['Curve elements', 'T = R·tan(Δ/2); L = R·Δ (radians); E = R[sec(Δ/2) − 1]; M = R[1 − cos(Δ/2)]; LC = 2R·sin(Δ/2).'],

@@ -18,6 +18,9 @@
   // TSTS Table 2.3(2) normal-crown minimum radius reproduced by R = V²/15(e+f) with e = −0.02
   for (const [v, r] of [[30, 333], [35, 510], [40, 762]]) eq(`Rmin NC ${v} mph (TSTS table)`, Math.round(f.rmin(v, -0.02)), r, 1);
   eq('Rmin e=0.04 45 mph (TSTS 711)', Math.round(f.rmin(45, 0.04)), 711, 1);
+  // GB high-speed side friction (f = 0.13 at 55 mph, 0.12 at 60 mph)
+  eq('Rmin e=0.04 55 mph (GB 1,190)', f.rmin(55, 0.04), 1190, 5);
+  eq('Rmin e=0.04 60 mph (GB 1,500)', f.rmin(60, 0.04), 1500, 1);
   // GB ISD (Case B1 passenger car) — tabulated design values
   for (const [v, d] of [[25, 280], [30, 335], [35, 390], [40, 445], [45, 500], [50, 555]]) eq(`ISD B1 P ${v} mph`, f.isd('B1', 'P', v).design, d);
   for (const [v, d] of [[30, 290], [45, 430]]) eq(`ISD B2 P ${v} mph`, f.isd('B2', 'P', v).design, d);

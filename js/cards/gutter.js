@@ -32,7 +32,7 @@ FST.card({
     const { f, ui, cls, C } = c;
     const R = [];
     const storm = C.storm[cls.storm][s.facility];
-    R.push(ui.val(`Design storm, ${s.facility === 'freeboard' ? 'roadway freeboard' : s.facility + 's'} (${cls.group === 'alley' ? 'local' : cls.group} street)`, `${storm}-year${s.facility === 'culvert' ? ', 100-year check' : ''}`, ['c31']));
+    R.push(ui.val(`Design storm, ${s.facility === 'freeboard' ? 'roadway freeboard' : ({ inlet: 'inlets', sewer: 'storm sewers', culvert: 'culverts', ditch: 'ditches' })[s.facility]} (${cls.group === 'alley' ? 'local' : cls.group} street)`, `${storm}-year${s.facility === 'culvert' ? ', 100-year check' : ''}`, ['c31']));
     let Q = s.Q;
     if (s.useRat) {
       Q = s.Cc * s.i * s.A;
