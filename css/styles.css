@@ -9,7 +9,6 @@
   --brand: #175e54;
   --brand-ink: #ffffff;
   --brand-soft: #e2efec;
-  --accent: #8a5a00;
   --note: #8a5a00;
   --note-bg: #fdf3dc;
   --info: #2a5a8c;
@@ -33,7 +32,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #121614; --surface: #1a201d; --surface-2: #222a26; --ink: #e8ece9; --ink-2: #b4bdb8; --line: #36403b;
-    --brand: #5fbfad; --brand-ink: #0d1a17; --brand-soft: #1d3530; --accent: #f0c060;
+    --brand: #5fbfad; --brand-ink: #0d1a17; --brand-soft: #1d3530;
     --note: #f0c060; --note-bg: #3a2f14;
     --info: #9cc3f0; --info-bg: #182838; --focus: #8ab4f8;
     --d-pave: #6c7470; --d-pave-2: #4b524e; --d-grass: #4f7a45; --d-walk: #7d7566; --d-water: #6aa8ee; --d-ground: #a8987a;
@@ -43,7 +42,7 @@
 }
 :root[data-theme="dark"] {
   --bg: #121614; --surface: #1a201d; --surface-2: #222a26; --ink: #e8ece9; --ink-2: #b4bdb8; --line: #36403b;
-  --brand: #5fbfad; --brand-ink: #0d1a17; --brand-soft: #1d3530; --accent: #f0c060;
+  --brand: #5fbfad; --brand-ink: #0d1a17; --brand-soft: #1d3530;
   --note: #f0c060; --note-bg: #3a2f14;
   --info: #9cc3f0; --info-bg: #182838; --focus: #8ab4f8;
   --d-pave: #6c7470; --d-pave-2: #4b524e; --d-grass: #4f7a45; --d-walk: #7d7566; --d-water: #6aa8ee; --d-ground: #a8987a;
@@ -123,7 +122,6 @@ select, input[type="number"] {
 input[type="range"] { flex: 1; min-width: 0; accent-color: var(--brand); height: 28px; }
 .num-wrap { display: inline-flex; align-items: center; gap: 4px; }
 .num { width: 6.2em !important; }
-.grow { flex: 1; font-size: .88rem; }
 .unit { color: var(--ink-2); font-size: .85rem; min-width: 2.5em; }
 .hint { font-size: .82rem; color: var(--ink-2); }
 fieldset.seg { border: 0; padding: 0; margin: 0; }
@@ -180,17 +178,14 @@ fieldset.seg { border: 0; padding: 0; margin: 0; }
 .diagram .walk { fill: var(--d-walk); }
 .diagram .water { fill: var(--d-water); opacity: .75; }
 .diagram .ground { fill: none; stroke: var(--d-ground); stroke-width: 2; }
-.diagram .ground-fill { fill: var(--d-ground); opacity: .18; }
 .diagram .road { fill: none; stroke: var(--d-line); stroke-width: 2.5; }
 .diagram .edge { stroke: var(--d-line); stroke-width: 1.5; fill: none; }
 .diagram .mark { stroke: var(--d-mark); stroke-width: 2; stroke-dasharray: 10 8; fill: none; }
 .diagram .mark-solid { stroke: var(--d-mark); stroke-width: 2; fill: none; }
 .diagram .lane-line { stroke: #ffffff; stroke-width: 1.5; stroke-dasharray: 10 8; fill: none; }
 .diagram .req { stroke: var(--d-req); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
-.diagram .req-fill { fill: var(--d-req); opacity: .14; }
 .diagram .ok { stroke: var(--d-ok); stroke-width: 2.5; fill: none; }
 .diagram .ok-fill { fill: var(--d-ok); opacity: .16; }
-.diagram .bad { stroke: var(--d-req); stroke-width: 2.5; fill: none; }
 .diagram .sight { stroke: var(--info); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
 .diagram .tri { fill: var(--info); opacity: .14; stroke: var(--info); stroke-width: 1.5; }
 .diagram .hazard { fill: var(--d-req); }
@@ -203,7 +198,7 @@ fieldset.seg { border: 0; padding: 0; margin: 0; }
 .swatch { display: inline-block; width: 18px; height: 10px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
 .swatch.pave { background: var(--d-pave); } .swatch.grass { background: var(--d-grass); } .swatch.walk { background: var(--d-walk); }
 .swatch.water { background: var(--d-water); } .swatch.req { border: 2px dashed var(--d-req); height: 0; }
-.swatch.ok { background: var(--d-ok); height: 4px; } .swatch.bad { background: var(--d-req); height: 4px; }
+.swatch.ok { background: var(--d-ok); height: 4px; }
 .swatch.tri { background: var(--info); opacity: .4; } .swatch.sight { border-top: 2px dashed var(--info); height: 0; }
 .swatch.hazard { background: var(--d-req); } .swatch.rail { background: var(--ink); height: 4px; }
 

@@ -355,9 +355,9 @@ FST.criteria = {
 /* Citation keys used by result rows and chips. */
 FST.cites = {
   t231: ['tsts', 'Table 2.3(1)'], t232: ['tsts', 'Table 2.3(2)'], t232a: ['tsts', 'Table 2.3(2) note a'],
-  t232b: ['tsts', 'Table 2.3(2) note b'], t233: ['tsts', 'Table 2.3(3)'], t234: ['tsts', 'Table 2.3(4)'],
+  t232b: ['tsts', 'Table 2.3(2) note b'], t234: ['tsts', 'Table 2.3(4)'],
   t235: ['tsts', 'Table 2.3(5)'], t236: ['tsts', 'Table 2.3(6)'], t238: ['tsts', 'Table 2.3(8)'], t239: ['tsts', 'Table 2.3(9)'],
-  s15: ['tsts', '§1.5'], s18: ['tsts', '§1.8'],
+  s15: ['tsts', '§1.5'],
   s237: ['tsts', '§2.3.7'], s238: ['tsts', '§2.3.8'], s2387: ['tsts', '§2.3.8(7)'], s2388: ['tsts', '§2.3.8(8)'],
   s239: ['tsts', '§2.3.9'], s2397: ['tsts', '§2.3.9(7)'], s2310: ['tsts', '§2.3.10'], s2311: ['tsts', '§2.3.11'],
   s2313: ['tsts', '§2.3.13'], s23138: ['tsts', '§2.3.13(8)'], s23139: ['tsts', '§2.3.13(9)'], s231310: ['tsts', '§2.3.13(10)'],

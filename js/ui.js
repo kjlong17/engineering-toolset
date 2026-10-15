@@ -213,5 +213,5 @@ FST.ui = (function () {
     return el('ul', { class: 'legend' }, items.map(([cls, label]) => el('li', null, el('span', { class: `swatch ${cls}`, 'aria-hidden': 'true' }), label)));
   }
 
-  return { el, fmt, ft, pct, select, segmented, range, toggle, group, chips, citeText, results, val, note, info, svg, legend, ranges, nextId };
+  return { el, fmt, ft, pct, select, segmented, range, toggle, group, chips, results, val, note, info, svg, legend, ranges };
 })();
