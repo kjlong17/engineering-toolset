@@ -42,8 +42,8 @@ FST.card({
     g.line(0, roadY + laneW, W, roadY + laneW, 'mark');
     g.rect(mx - laneW, edgeY, 2 * laneW, H - edgeY, 'pave');
     g.line(mx, edgeY, mx, H, 'mark');
-    g.line(mx - laneW, edgeY + 18, mx, edgeY + 18, 'mark-solid'); // stop bar
-    const dp = [mx - laneW / 2, edgeY + legPx];
+    g.line(mx, edgeY + 18, mx + laneW, edgeY + 18, 'stop-bar'); // stop bar on the approach (right-hand) lane
+    const dp = [mx + laneW / 2, edgeY + legPx];
     const nearLane = roadY + laneW * 1.5, farLane = roadY + laneW * 0.5;
     const tri = (side, laneY) => {
       const x = side < 0 ? mx - isdPx : mx + isdPx;
@@ -62,8 +62,9 @@ FST.card({
       g.dimH(mx - isdPx, dp[0], roadY - 22, `ISD ${r.design} ft (from left)`);
       if (s.kase !== 'B2') { tri(1, farLane); g.dimH(dp[0], mx + isdPx, roadY - 44, `ISD ${r.design} ft (from right)`); }
       g.add('circle', { cx: dp[0], cy: dp[1], r: 5, class: 'pt' });
-      g.text(dp[0] - 10, dp[1] + 4, 'Driver eye', 't t-sm', { 'text-anchor': 'end' });
-      g.dimV(mx + laneW + 12, edgeY, dp[1], `${C.gb.isdDecisionPoint} ft`);
+      g.text(dp[0] + 10, dp[1] + 18, 'Driver eye', 't t-sm');
+      g.dimV(mx + laneW + 12, edgeY, dp[1], '');
+      g.text(mx + laneW + 18, edgeY + 16, `${C.gb.isdDecisionPoint} ft`, 't dim-t');
     }
     g.text(16, H - 14, `ISD ${r.design} ft · tg ${r.tg.toFixed(1)} s · ${s.V} mph`, 't t-b');
     g.text(W - 16, H - 14, 'Not to scale', 't t-sm', { 'text-anchor': 'end' });

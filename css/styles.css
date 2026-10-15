@@ -182,6 +182,7 @@ fieldset.seg { border: 0; padding: 0; margin: 0; }
 .diagram .edge { stroke: var(--d-line); stroke-width: 1.5; fill: none; }
 .diagram .mark { stroke: var(--d-mark); stroke-width: 2; stroke-dasharray: 10 8; fill: none; }
 .diagram .mark-solid { stroke: var(--d-mark); stroke-width: 2; fill: none; }
+.diagram .stop-bar { stroke: #ffffff; stroke-width: 3; fill: none; }
 .diagram .lane-line { stroke: #ffffff; stroke-width: 1.5; stroke-dasharray: 10 8; fill: none; }
 .diagram .req { stroke: var(--d-req); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
 .diagram .ok { stroke: var(--d-ok); stroke-width: 2.5; fill: none; }
@@ -198,7 +199,7 @@ fieldset.seg { border: 0; padding: 0; margin: 0; }
 .swatch { display: inline-block; width: 18px; height: 10px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
 .swatch.pave { background: var(--d-pave); } .swatch.grass { background: var(--d-grass); } .swatch.walk { background: var(--d-walk); }
 .swatch.water { background: var(--d-water); } .swatch.req { border: 2px dashed var(--d-req); height: 0; }
-.swatch.ok { background: var(--d-ok); height: 4px; }
+.swatch.ok { background: var(--d-ok); height: 4px; } .swatch.ok-fill { background: var(--d-ok); opacity: .35; }
 .swatch.tri { background: var(--info); opacity: .4; } .swatch.sight { border-top: 2px dashed var(--info); height: 0; }
 .swatch.hazard { background: var(--d-req); } .swatch.rail { background: var(--ink); height: 4px; }
 

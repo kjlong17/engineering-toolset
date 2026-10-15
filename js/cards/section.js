@@ -46,7 +46,7 @@ FST.card({
     const short = { median: 'Median', mcurb: '', lane: 'Lane', twltl: 'TWLTL', bike: 'Bike', park: 'Parking', curb: '', grass: 'Grass', walk: 'Walk', mup: 'Trail', back: '' };
     let x = x0;
     const base = 150;
-    g.line(x0, 40, x0, 200, 'dim'); g.text(x0, 34, 'CL', 't t-b', { 'text-anchor': 'middle' });
+    g.line(x0, 44, x0, 200, 'dim'); g.text(x0, 40, 'CL', 't t-b', { 'text-anchor': 'middle' });
     v.parts.forEach((p, i) => {
       const pw = p[1] * sc;
       const raised = ['median', 'grass', 'walk', 'mup', 'back'].includes(p[0]);
@@ -59,7 +59,7 @@ FST.card({
     const rowX = x0 + (v.row / 2) * sc;
     g.line(rowX, 50, rowX, 200, 'req');
     g.text(rowX, 214, `ROW (½ of ${v.row}')`, 't t-sm', { 'text-anchor': 'middle' });
-    g.text(x0 + 8, 24, `${cls.tableTS} — ${v.label}`, 't t-b');
+    g.text(x0 - 24, 18, `${cls.tableTS} — ${v.label}`, 't t-b');
 
     return {
       svg: g,

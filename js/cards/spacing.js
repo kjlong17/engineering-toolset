@@ -83,7 +83,7 @@ FST.card({
     }
     return {
       svg: g,
-      legend: ui.legend([['ok', 'Design limit']]),
+      legend: ['angle', 'radius'].includes(s.kind) ? ui.legend([['ok', 'Design limit']]) : null,
       results: R,
       basis: [
         ['Source values', `Table 2.3(2) for ${cls.name}: signalized ${cls.spacing.signal ?? 'n/a'} ft; unsignalized ${cls.spacing.unsignal ?? 'n/a'} ft; high-volume driveway ${cls.spacing.hvDriveway ?? 'n/a'} ft; low-volume driveway to street ${cls.spacing.lvDrivewayToInt ?? 'n/a'} ft; between low-volume driveways ${cls.spacing.lvDriveway ?? 'n/a'} ft.`],

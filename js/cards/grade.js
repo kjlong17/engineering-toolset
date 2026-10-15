@@ -38,8 +38,8 @@ FST.card({
 
     return {
       svg: ui.ranges(`Grade limits for ${cls.name}`, rows),
-      legend: ui.legend([['ok', 'Allowed range (shaded)']]),
-      caption: 'The shaded band is the allowed range; tick marks are the limits.',
+      legend: ui.legend([['ok-fill', 'Allowed range']]),
+      caption: 'Each row has its own scale. Tick marks are the limits.',
       results: R,
       basis: [
         ['Maximum grades', 'Table 2.3(2) and Table 2.3(5). Signal approach limits from Table 2.3(5); within the intersection 3% (§2.3.13(7)(b)). Values may be amended by the approving agency (note c).'],

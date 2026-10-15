@@ -52,7 +52,7 @@ FST.card({
     R.push(ui.info('Use combination (grate + curb opening) inlets where possible; double inlets at low points and cul-de-sac ends; inlets at the downstream end of inset parking bays', ['s3212']));
 
     // ---- Diagram: cross-section with spread ----
-    const W = 640, H = 230, curbX = 590, y0 = 150, sc = Math.min(18, 540 / Math.max(allowed, T, 1) / 1.1);
+    const W = 640, H = 262, curbX = 590, y0 = 150, sc = Math.min(18, 540 / Math.max(allowed, T, 1) / 1.1);
     const g = ui.svg(W, H, 'Gutter cross-section with water spread',
       `Spread ${T.toFixed(1)} feet from the curb face for ${Q.toFixed(2)} cfs; allowable spread ${allowed.toFixed(1)} feet carries ${qAllow.toFixed(2)} cfs.`);
     const ex = 6; // vertical exaggeration of the cross slope
@@ -62,8 +62,8 @@ FST.card({
     const tx = curbX - T * sc;
     g.add('path', { d: `M${Math.max(tx, 0)},${surf(Math.max(tx, 0))} L${curbX},${y0} L${curbX},${surf(Math.max(tx, 0))} Z`, class: 'water' });
     const ax = curbX - allowed * sc;
-    g.line(ax, 40, ax, y0 + 30, 'req');
-    g.text(ax - 4, 36, `Allowable ${allowed.toFixed(1)} ft (${ui.fmt(qAllow, 2)} cfs)`, 't t-sm', { 'text-anchor': 'end' });
+    g.line(ax, 52, ax, y0 + 30, 'req');
+    g.text(ax - 4, 48, `Allowable ${allowed.toFixed(1)} ft (${ui.fmt(qAllow, 2)} cfs)`, 't t-sm', { 'text-anchor': 'end' });
     // lane markings
     const gx = curbX - s.gutterW * sc, bx = gx - (s.side !== 'none' ? s.sideW : 0) * sc;
     g.line(gx, y0 + 30, gx, y0 + 40, 'edge');

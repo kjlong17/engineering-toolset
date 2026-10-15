@@ -58,8 +58,8 @@ FST.card({
 
     return {
       svg: ui.ranges(`Driveway dimensions for ${cls.name}`, rows),
-      legend: ui.legend([['ok', 'Allowed range (shaded)']]),
-      caption: 'The shaded band is the allowed range; tick marks are the limits.',
+      legend: ui.legend([['ok-fill', 'Allowed range']]),
+      caption: 'Each row has its own scale. Tick marks are the limits.',
       results: R,
       basis: [
         ['Widths', 'Table 2.3(8): residential 10–20 ft; nonresidential one-way 15–20 ft; two-way 24–36 ft. Streets without curb: 12–22 ft (§2.3.23(26)).'],

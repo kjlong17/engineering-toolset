@@ -101,7 +101,7 @@ FST.card({
     }
     if (needCurve && vc.turning) {
       g.add('circle', { cx: X(vc.turning.sta), cy: Y(vc.turning.elev), r: 4, class: 'pt' });
-      g.text(X(vc.turning.sta), Y(vc.turning.elev) + (type === 'crest' ? -10 : 20), type === 'crest' ? 'High pt' : 'Low pt', 't t-sm', { 'text-anchor': 'middle' });
+      g.text(X(vc.turning.sta), Y(vc.turning.elev) + (type === 'crest' ? 18 : -10), type === 'crest' ? 'High point' : 'Low point', 't t-sm', { 'text-anchor': 'middle' });
     }
     g.text(x0, 18, `g1 = ${s.g1}%`, 't t-b');
     g.text(x1, 18, `g2 = ${s.g2}%`, 't t-b', { 'text-anchor': 'end' });

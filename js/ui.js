@@ -184,7 +184,7 @@ FST.ui = (function () {
   /* Range chart: one row per design limit; the allowed range is shaded and the limits are labeled.
      rows: { label, lo, hi, max, unit, d } — lo/hi may be null. */
   function ranges(title, rows) {
-    const W = 640, rowH = 46, top = 16, left = 200, right = 540;
+    const W = 640, rowH = 46, top = 16, left = 250, right = 540;
     const H = top + rows.length * rowH + 10;
     const span = (r) => r.lo != null && r.hi != null ? (r.lo === r.hi ? `${fmt(r.lo, r.d ?? 1)}` : `${fmt(r.lo, r.d ?? 1)}–${fmt(r.hi, r.d ?? 1)}`) : r.lo != null ? `≥ ${fmt(r.lo, r.d ?? 1)}` : `≤ ${fmt(r.hi, r.d ?? 1)}`;
     const unit = (r) => (r.unit === 'ft' ? ' ft' : r.unit); // no space before % or °
