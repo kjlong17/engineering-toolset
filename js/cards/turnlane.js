@@ -2,7 +2,7 @@
 FST.card({
   id: 'turnlane', tab: 'int',
   title: 'Turn lane need and length',
-  intro: 'Shows when a left or right turn lane is required, then gives its dimensions: lane change and deceleration, storage, bay taper and approach taper. The TSTS sets when lanes are needed and defers dimensions to the traffic impact analysis; sizing here follows the TDOT Highway System Access Manual.',
+  intro: 'Shows when a left or right turn lane is required, then gives its dimensions: lane change and deceleration, storage, bay taper and approach taper. The TSTS sets when lanes are needed and defers dimensions to the traffic impact analysis (TIA); sizing here follows the TDOT Highway System Access Manual.',
   cites: ['t231', 't236', 's23138', 's23139', 's231310', 's2323', 'hsam311', 'hsam312', 'hsamTaper', 'gbTurn'],
   defaults: (c) => ({ turn: 'left', ctrl: 'unsig', V: Math.max(20, c.cls.designSpeed), constrained: false, vol: 100, opp: 400, cycle: 90, queue: 0,
     thru: 300, W: Math.max(12, c.cls.lane || 12), Woff: 12, dw: false }),
@@ -14,9 +14,9 @@ FST.card({
       u.range({ label: 'Through-movement design speed', min: 20, max: 70, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v) }),
       u.toggle({ label: 'Constrained site (use speed 10 mph lower for deceleration)', checked: s.constrained, onChange: (v) => set('constrained', v), hint: 'Allowed by TDOT HSAM when the full length is not practical. Agency approval needed.' }),
       u.range({ label: 'Turning volume (design hour)', min: 0, max: 600, step: 10, value: s.vol, unit: 'veh/h', onChange: (v) => set('vol', v) }),
-      s.ctrl === 'unsig' && s.turn === 'left' ? u.range({ label: 'Opposing volume', min: 0, max: 1200, step: 10, value: s.opp, unit: 'veh/h', onChange: (v) => set('opp', v) }) : null,
+      s.ctrl === 'unsig' && s.turn === 'left' ? u.range({ label: 'Opposing volume (design hour)', min: 0, max: 1200, step: 10, value: s.opp, unit: 'veh/h', onChange: (v) => set('opp', v) }) : null,
       s.ctrl === 'sig' ? u.range({ label: 'Signal cycle length', min: 50, max: 180, step: 5, value: s.cycle, unit: 's', onChange: (v) => set('cycle', v) }) : null,
-      s.ctrl === 'sig' ? u.range({ label: 'Queue from the traffic study (0 = estimate)', min: 0, max: 800, step: 25, value: s.queue, unit: 'ft', onChange: (v) => set('queue', v), hint: 'Use the 95th-percentile queue from the TIA when available.' }) : null,
+      s.ctrl === 'sig' ? u.range({ label: 'Queue from the TIA (0 = estimate)', min: 0, max: 800, step: 25, value: s.queue, unit: 'ft', onChange: (v) => set('queue', v), hint: 'Use the 95th-percentile queue from the TIA when available.' }) : null,
       s.ctrl === 'sig' && s.turn === 'right' ? u.range({ label: 'Adjacent through volume per lane', min: 0, max: 1200, step: 10, value: s.thru, unit: 'veh/h/ln', onChange: (v) => set('thru', v) }) : null,
       u.range({ label: 'Turn lane width', min: 10, max: 14, step: 0.5, value: s.W, unit: 'ft', onChange: (v) => set('W', v) }),
       u.range({ label: 'Through-lane shift for approach taper (0 = none)', min: 0, max: 14, step: 0.5, value: s.Woff, unit: 'ft', onChange: (v) => set('Woff', v), hint: 'Lateral shift of the through lanes to make room for the turn lane.' }),
@@ -39,7 +39,7 @@ FST.card({
       }
     } else {
       const req = cls.rightReq;
-      R.push(ui.val(`Right turn lane, ${cls.name} (Table 2.3(1))`, `"${req}"`, ['t231', 's23139'], 'The TIA determines need at each intersection or access.'));
+      R.push(ui.val(`Right turn lane, ${cls.name}`, { Yes: 'Required', Maybe: 'Depends on the TIA', No: 'Not typically required' }[req] || req, ['t231', 's23139'], `Table 2.3(1) lists "${req}". The TIA determines need at each intersection or access.`));
       if (s.ctrl === 'unsig' && s.V < 40) R.push(ui.val(`TDOT warrant below 40 mph (${H.unsigRightLowSpeed} right turns/h)`, s.vol >= H.unsigRightLowSpeed ? 'Warranted' : 'Not warranted', ['hsamTurn']));
       if (s.ctrl === 'unsig' && s.V >= 40) R.push(ui.info('At 40 mph or more, use TDOT HSAM Figures 3-18 and 3-19 (NCHRP 457) right-turn warrants', ['hsamTurn']));
       if (s.ctrl === 'sig') R.push(ui.val(`TDOT signalized warrant (right > ${H.sigRight} veh/h and through > ${H.sigRightThruPerLane} veh/h/lane)`, s.vol > H.sigRight && s.thru > H.sigRightThruPerLane ? 'Warranted' : 'Not warranted', ['hsamTurn']));
@@ -62,7 +62,7 @@ FST.card({
     } else {
       const est = f.storageSig(s.vol, s.cycle);
       storage = Math.max(s.queue || est.length, H.minStorageUrban);
-      storageNote = s.queue ? 'Queue from the traffic study.' : `Estimate: 2 × ${est.perCycle.toFixed(1)} vehicles per cycle × ${H.vehLength} ft. Replace with the TIA 95th-percentile queue.`;
+      storageNote = s.queue ? 'Queue from the TIA.' : `Estimate: 2 × ${est.perCycle.toFixed(1)} vehicles per cycle × ${H.vehLength} ft. Replace with the TIA 95th-percentile queue.`;
     }
     if (storage != null) storage = Math.max(storage, H.minStorageUrban);
     const bay = f.bayTaper(s.W, s.V);
@@ -72,11 +72,11 @@ FST.card({
     R.push(ui.val('Lane change and deceleration length (includes bay taper)', ui.ft(D), ['hsam311'], s.constrained ? `At ${Vd} mph (constrained site).` : null));
     if (storage != null) R.push(ui.val('Storage length', ui.ft(storage), ['hsam312'], storageNote));
     else R.push(ui.note('Storage length needs a queue analysis', ['hsam312'], storageNote));
-    if (total != null) R.push(ui.val('Total turn lane length (bay taper + full-width lane)', ui.ft(total), ['hsam311', 'hsam312'], `${D} ft deceleration + ${storage} ft storage.`));
-    R.push(ui.val('Bay taper', `${ui.ft(bay.length)} (${(bay.length / s.W).toFixed(1)}:1)`, ['hsamTaper'], `L = WS/3 = ${ui.fmt(bay.raw)} ft, held between 8:1 (${bay.min} ft) and 15:1 (${bay.max} ft). The bay taper counts toward the deceleration length.`));
+    if (total != null) R.push(ui.val('Total turn lane length (deceleration + storage)', ui.ft(total), ['hsam311', 'hsam312'], `${D} ft deceleration + ${storage} ft storage.`));
+    R.push(ui.val('Bay taper', `${ui.ft(bay.length)} (${(bay.length / s.W).toFixed(1)}:1)`, ['hsamTaper'], `L = WS/3 = ${ui.fmt(bay.raw)} ft (W = turn lane width, S = speed), limited to 8:1 (${bay.min} ft) to 15:1 (${bay.max} ft). The bay taper counts toward the deceleration length.`));
     if (app) R.push(ui.val('Approach (redirect) taper', ui.ft(Math.ceil(app)), ['s2311', 'hsamTaper'], `${s.V <= 40 ? 'L = WS²/60' : 'L = WS'} with W = ${s.Woff} ft, S = ${s.V} mph. The departure taper may be no sharper than this rate.`));
     const wMin = s.dw ? 12 : Math.max(12, cls.lane || 12);
-    R.push(ui.val('Minimum turn lane width', ui.ft(wMin), ['t231', 's2323'], s.W < wMin ? `The ${s.W} ft width entered is used only for the bay taper above.` : null));
+    R.push(ui.val('Minimum turn lane width', ui.ft(wMin), ['t231', 's2323'], s.W < wMin ? `The ${s.W} ft width entered is below this minimum; it is used only to compute the bay taper.` : null));
     R.push(ui.info('TSTS Figures 2.3(3) and 2.3(4) are reserved; final dimensions are set by the TIA and approved by the agency', ['s231310']));
 
     // ---- Diagram: plan view, traffic moving left to right ----

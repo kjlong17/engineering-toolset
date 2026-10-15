@@ -26,7 +26,7 @@
     </div>
   </header>
 
-  <div class="context">
+  <section class="context" aria-label="Street classification">
     <div class="wrap ctx-row">
       <div class="field ctx-field">
         <label for="ctx-class">Street classification</label>
@@ -35,14 +35,15 @@
       <dl class="ctx-facts">
         <div><dt>Speeds</dt><dd id="ctx-speed"></dd></div>
         <div><dt>Typical section</dt><dd id="ctx-meta"></dd></div>
+        <div><dt>Design traffic (ADT)</dt><dd id="ctx-adt"></dd></div>
       </dl>
-      <p class="hint" id="ctx-help">Choosing a classification fills every tool with its TSTS defaults. Change any input to match your design.</p>
+      <p class="hint" id="ctx-help">Choosing a classification fills every tool with its TSTS defaults and resets all inputs. Change any input to match your design.</p>
       <p class="sr-only" role="status" id="ctx-status"></p>
     </div>
-  </div>
+  </section>
 
   <nav class="tabs" aria-label="Tool categories">
-    <div class="wrap"><div role="tablist" id="tabbar" aria-label="Tool categories"></div></div>
+    <div class="wrap"><div role="tablist" id="tabbar"></div></div>
   </nav>
 
   <main class="wrap" id="panels" tabindex="-1"></main>
@@ -59,7 +60,7 @@
     <h2 id="disclaimer-title">Before you use these tools</h2>
     <p>These tools are an engineering reference. For the inputs you enter, they compute design values from the Transportation &amp; Street Technical Standards (TSTS, 2025 edition) and the TDOT, AASHTO, MUTCD and FHWA criteria they reference.</p>
     <ul>
-      <li>This is an independent tool. It is not affiliated with, produced by or endorsed by any city or agency that adopted the Standards.</li>
+      <li>This is an independent tool. It is not affiliated with, produced by or endorsed by the City of Franklin, Tennessee, or any agency that adopted the Standards.</li>
       <li>It does not replace engineering judgment, a sealed design, or the approving agency's review.</li>
       <li>The adopted Standards, and determinations by the approving agency, control over any result shown here.</li>
       <li>Results are provided without warranty. Check every value against the cited source.</li>

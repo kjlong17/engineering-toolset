@@ -2,7 +2,7 @@
 FST.card({
   id: 'section', tab: 'xs',
   title: 'Typical section',
-  intro: 'Gives the TSTS typical section for the selected classification: the minimum width of each element, the right-of-way, and cul-de-sac and clearance dimensions.',
+  intro: 'Gives the TSTS typical section for the selected classification: the minimum width of each element, the right-of-way, cul-de-sac and clearance dimensions, and private emergency access lanes.',
   cites: ['ts', 't231', 's237', 's2321', 's2397'],
   defaults(c) {
     return { variant: FST.sections[c.cls.id][0].id, cds: false, sprink: false };
@@ -23,7 +23,7 @@ FST.card({
     const R = [];
     const w = (x) => ui.ft(x, 2).replace('.00', '').replace(/(\.\d)0 ft$/, '$1 ft');
     const half = v.parts.reduce((a, p) => a + p[1], 0);
-    R.push(ui.val('Right-of-way width', ui.ft(v.row), ['ts'], `Elements below are a half section, centerline outward, totaling ${w(half)}; half the right-of-way is ${w(v.row / 2)}.`));
+    R.push(ui.val('Right-of-way width', ui.ft(v.row), ['ts'], `Elements below are a half section, centerline outward, totaling ${w(half)}; half the right-of-way is ${w(v.row / 2)}. Element widths are minimums.`));
     for (const p of v.parts) R.push(ui.val(p[2], w(p[1]), ['ts', 't231']));
     if (cls.sidewalkNote && cls.sidewalkNote.includes('8')) R.push(ui.info(`Table 2.3(1) sidewalk width for ${cls.name}: ${cls.sidewalkNote}`, ['t231']));
     if (cls.median) R.push(ui.info(`Median width ${cls.median} ft; raised medians at least 4 ft face to face`, ['t231', 's2315']));
@@ -36,14 +36,14 @@ FST.card({
       R.push(ui.val('Cul-de-sac paved radius (outside edge)', ui.ft(C.cds.pavedRadius), ['s237']));
       R.push(ui.info('No medians or parking in cul-de-sacs; four "No Parking" signs evenly spaced', ['s237']));
     }
-    R.push(ui.val('Private emergency access lanes', `${C.fireLane.width} ft wide, ${C.fireLane.vertClear} ft clear height`, ['s2321'], `Grade ${C.fireLane.gradeMin}–${C.fireLane.gradeMax}%; cross slope ${C.fireLane.xsMin}–${C.fireLane.xsMax}%.`));
+    R.push(ui.val('Private emergency access lane', `${C.fireLane.width} ft wide, ${C.fireLane.vertClear} ft clear height`, ['s2321'], `Grade ${C.fireLane.gradeMin}–${C.fireLane.gradeMax}%; cross slope ${C.fireLane.xsMin}–${C.fireLane.xsMax}%.`));
 
     // ---- Diagram: half cross-section ----
     const W = 640, H = 240, x0 = 40, x1 = 600;
     const sc = (x1 - x0) / Math.max(half, v.row / 2);
     const g = ui.svg(W, H, `${cls.name} half cross-section`, `${v.label}. Right-of-way ${v.row} feet. ${v.parts.map((p) => `${p[2]} ${p[1]} feet`).join(', ')}.`);
     const fill = { median: 'grass', mcurb: 'curb', lane: 'pave', twltl: 'pave', bike: 'pave-2', park: 'pave-2', curb: 'curb', grass: 'grass', walk: 'walk', mup: 'walk', back: 'grass' };
-    const short = { median: 'Median', mcurb: '', lane: 'Lane', twltl: 'TWLTL', bike: 'Bike', park: 'Parking', curb: '', grass: 'Grass', walk: 'Walk', mup: 'Trail', back: '' };
+    const short = { median: 'Median', mcurb: '', lane: 'Lane', twltl: 'Turn lane', bike: 'Bike', park: 'Parking', curb: '', grass: 'Grass', walk: 'Walk', mup: 'Trail', back: '' };
     let x = x0;
     const base = 150;
     g.line(x0, 44, x0, 200, 'dim'); g.text(x0, 40, 'CL', 't t-b', { 'text-anchor': 'middle' });
@@ -58,7 +58,7 @@ FST.card({
     });
     const rowX = x0 + (v.row / 2) * sc;
     g.line(rowX, 50, rowX, 200, 'req');
-    g.text(rowX, 214, `ROW (½ of ${v.row}')`, 't t-sm', { 'text-anchor': 'middle' });
+    g.text(rowX, 214, `ROW (½ of ${v.row} ft)`, 't t-sm', { 'text-anchor': 'middle' });
     g.text(x0 - 24, 18, `${cls.tableTS} — ${v.label}`, 't t-b');
 
     return {
@@ -68,7 +68,7 @@ FST.card({
       basis: [
         ['Section source', `TSTS Typical Street Sections ${cls.tableTS} (dated 7/1/2021, published with the 2025 Standards). Dimensions shown are minimums; Table 2.3(1) lane width ${cls.lane ?? 'n/a'} ft.`],
         ['Cul-de-sacs', '§2.3.7(1): local streets only; 500 ft maximum (1,000 ft with fire sprinklers); 65 ft right-of-way radius; 50 ft paved radius.'],
-        ['Clearances', '§2.3.9(7): 16.5 ft vertical clearance over streets; §2.3.21: 13.5 ft over fire lanes; §2.3.14: 10 ft over sidewalks.']
+        ['Clearances', '§2.3.9(7): 16.5 ft vertical clearance over streets; §2.3.21: 13.5 ft over private emergency access lanes; §2.3.14: 10 ft over sidewalks.']
       ]
     };
   }

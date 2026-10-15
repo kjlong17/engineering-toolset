@@ -8,13 +8,13 @@ FST.card({
   fields(c, s, set) {
     const u = c.ui;
     return [
-      u.range({ label: 'Design speed', min: 15, max: 60, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v), hint: `TSTS default for ${c.cls.name}: ${c.cls.designSpeed} mph (posted + 5).` }),
-      u.range({ label: 'Grade in (g1)', min: -10, max: 10, step: 0.1, value: s.g1, unit: '%', onChange: (v) => set('g1', v) }),
-      u.range({ label: 'Grade out (g2)', min: -10, max: 10, step: 0.1, value: s.g2, unit: '%', onChange: (v) => set('g2', v) }),
+      u.range({ label: 'Design speed', min: 15, max: 60, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v), hint: `TSTS default for ${c.cls.name}: ${c.cls.designSpeed} mph.` }),
+      u.range({ label: 'Back tangent grade (g1)', min: -10, max: 10, step: 0.1, value: s.g1, unit: '%', onChange: (v) => set('g1', v), hint: 'Positive rises in the direction of stationing.' }),
+      u.range({ label: 'Forward tangent grade (g2)', min: -10, max: 10, step: 0.1, value: s.g2, unit: '%', onChange: (v) => set('g2', v) }),
       u.toggle({ label: 'Sag curve has continuous street lighting', checked: s.lit, onChange: (v) => set('lit', v), hint: 'AASHTO allows the comfort criterion instead of headlight sight distance on lit sags.' }),
       u.group('Curve layout (optional)',
-        u.range({ label: 'Curve length to lay out (0 = minimum, rounded up to 10 ft)', min: 0, max: 1500, step: 10, value: s.L, unit: 'ft', onChange: (v) => set('L', v), hint: 'A length shorter than the minimum is replaced by the minimum.' }),
-        u.range({ label: 'PVI station', min: 0, max: 10000, step: 10, value: s.pviSta, unit: 'ft', onChange: (v) => set('pviSta', v) }),
+        u.range({ label: 'Curve length for layout (0 = use minimum)', min: 0, max: 1500, step: 10, value: s.L, unit: 'ft', onChange: (v) => set('L', v), hint: 'The minimum is rounded up to the next 10 ft. A shorter entry is replaced by the minimum.' }),
+        u.range({ label: 'PVI station (point of vertical intersection)', min: 0, max: 10000, step: 10, value: s.pviSta, unit: 'ft', onChange: (v) => set('pviSta', v), hint: 'In feet; 1000 = Sta. 10+00.' }),
         u.range({ label: 'PVI elevation', min: 0, max: 2000, step: 0.01, value: s.pviElev, unit: 'ft', onChange: (v) => set('pviElev', v) }))
     ];
   },
@@ -43,13 +43,13 @@ FST.card({
     const Luse = needCurve ? Math.max(s.L || 0, f.ceilTo(lReq, 10)) : 0;
 
     R.push(ui.val('Algebraic difference in grade (A)', ui.pct(A), null, `${type === 'crest' ? 'Crest' : 'Sag'} curve.`));
-    R.push(ui.val('Stopping sight distance (governing)', ui.ft(S), ['gbSsd', 't232'], `AASHTO ${ui.ft(sGB)}; TSTS Table 2.3(2) ${sTsts != null ? ui.ft(sTsts) : 'n/a at this speed'}.`));
+    R.push(ui.val('Stopping sight distance (governing)', ui.ft(S), ['gbSsd', 't232'], `AASHTO ${ui.ft(sGB)}; TSTS Table 2.3(2) ${sTsts != null ? ui.ft(sTsts) : `value applies only at the classification design speed (${cls.designSpeed} mph)`}.`));
     if (!needCurve) {
       R.push(ui.val('Vertical curve', 'Not required', ['s239'], `A = ${ui.pct(A)} is within the ${C.gradeBreak.max}% single-point grade break limit.`));
     } else {
-      R.push(ui.val(`Minimum K (${type})`, String(kReq), ['t232', 'gbVc'], comfortUsed ? 'Comfort criterion, lit sag.' : `AASHTO ${kGB}; TSTS ${kTsts ?? 'n/a at this speed'}.`));
+      R.push(ui.val(`Minimum K (${type}), ft per % of A`, String(kReq), ['t232', 'gbVc'], comfortUsed ? 'Comfort criterion, lit sag.' : `AASHTO ${kGB}; TSTS ${kTsts ?? `value applies only at the classification design speed (${cls.designSpeed} mph)`}.`));
       R.push(ui.val('Minimum curve length', ui.ft(Lmin), ['t232', 'gbVc'],
-        `Largest of TSTS K·A ${ui.fmt(lTsts, 0)} ft, AASHTO ${ui.fmt(lGB, 0)} ft and 3V = ${lMin} ft.`));
+        `Largest of TSTS K·A ${kTsts ? `${ui.fmt(lTsts, 0)} ft` : '(not used: not at the classification design speed)'}, AASHTO ${ui.fmt(lGB, 0)} ft and 3 × design speed = ${lMin} ft.`));
     }
     if (kTsts != null && kTsts < kGB) {
       R.push(ui.note(`TSTS K (${kTsts}) is below the AASHTO value (${kGB}) for ${s.V} mph — AASHTO governs`, ['t232a', 's15'], 'Table 2.3(2) note a says the latest Green Book values supersede the table.'));
@@ -57,7 +57,7 @@ FST.card({
     if (sTsts != null && sTsts < sGB) {
       R.push(ui.note(`TSTS stopping sight distance (${sTsts} ft) is below AASHTO (${sGB} ft) — AASHTO governs`, ['t232a', 'gbSsd']));
     }
-    R.push(ui.val(`Maximum tangent grade, ${cls.name}`, ui.pct(cls.maxGrade, 0), ['t235']));
+    R.push(ui.val(`Maximum centerline grade, ${cls.name}`, ui.pct(cls.maxGrade, 1), ['t235']));
     // Steepest downgrade for either direction of travel.
     const down = -Math.max(Math.abs(s.g1), Math.abs(s.g2));
     if (down < -3) R.push(ui.info(`On a ${ui.pct(Math.abs(down), 1)} downgrade, AASHTO stopping sight distance increases to ${ui.ft(f.ssdDesign(s.V, down))}`, ['gbSsd']));
@@ -65,10 +65,10 @@ FST.card({
     const vc = f.vcurve(s.g1, s.g2, Math.max(Luse, 1), s.pviSta, s.pviElev);
     if (needCurve) {
       R.push(ui.val('Curve length used for layout', ui.ft(Luse), null, `K = ${ui.fmt(Luse / A, 1)}.${s.L && s.L < Luse ? ' The entered length is below the minimum, so the minimum is used.' : ''}`));
-      R.push(ui.val('PVC', `Sta. ${sta(vc.pvcSta)}, elev. ${ui.fmt(vc.pvcElev, 2)}`));
-      R.push(ui.val('PVT', `Sta. ${sta(vc.pvtSta)}, elev. ${ui.fmt(vc.pvtElev, 2)}`));
+      R.push(ui.val('PVC (begin curve)', `Sta. ${sta(vc.pvcSta)}, elev. ${ui.fmt(vc.pvcElev, 2)} ft`));
+      R.push(ui.val('PVT (end curve)', `Sta. ${sta(vc.pvtSta)}, elev. ${ui.fmt(vc.pvtElev, 2)} ft`));
       if (vc.turning) {
-        R.push(ui.val(`${type === 'crest' ? 'High' : 'Low'} point`, `Sta. ${sta(vc.turning.sta)}, elev. ${ui.fmt(vc.turning.elev, 2)}`, null,
+        R.push(ui.val(`${type === 'crest' ? 'High' : 'Low'} point`, `Sta. ${sta(vc.turning.sta)}, elev. ${ui.fmt(vc.turning.elev, 2)} ft`, null,
           `${ui.fmt(vc.turning.x, 1)} ft past the PVC.${type === 'sag' ? ' Place an inlet at the low point (double inlet per §3.2.1(2)).' : ''}`));
       }
     }
@@ -117,10 +117,10 @@ FST.card({
       legend: ui.legend([['ok', 'Profile with design curve']]),
       results: R,
       basis: [
-        ['Stopping sight distance', `AASHTO: SSD = 1.47·V·t + V²/[30(a/32.2 ± G)], t = ${C.gb.prt} s, a = ${C.gb.decel} ft/s², rounded up to 5 ft → ${sGB} ft at ${s.V} mph. TSTS Table 2.3(2): ${sTsts ?? 'n/a at this speed'} ft.`],
+        ['Stopping sight distance', `AASHTO: SSD = 1.47·V·t + V²/[30(a/32.2 ± G)], t = ${C.gb.prt} s, a = ${C.gb.decel} ft/s², rounded up to the next 5 ft → ${sGB} ft at ${s.V} mph. TSTS Table 2.3(2): ${sTsts != null ? `${sTsts} ft` : `value applies only at the classification design speed (${cls.designSpeed} mph)`}.`],
         ['Crest K', 'K = S² / 2158 (driver eye 3.5 ft, object 2.0 ft), when S < L. When S > L: L = 2S − 2158/A.'],
         ['Sag K', 'K = S² / (400 + 3.5S) (headlight 2 ft, 1° beam). Lit sags may use comfort K = V²/46.5.'],
-        ['Governing', 'Minimum length is the largest of TSTS K·A, AASHTO and 3V, per §1.5 (more restrictive governs). Layout length is rounded up to 10 ft.'],
+        ['Governing', 'Minimum length is the largest of TSTS K·A, AASHTO and 3 × design speed (3V, ft), per §1.5 (more restrictive governs). Layout length is rounded up to the next 10 ft.'],
         ['Grade break', `No vertical curve needed if A ≤ ${C.gradeBreak.max}% (§2.3.9(2)); 1.0% at sag flow lines; 3.0% in curb returns.`]
       ]
     };

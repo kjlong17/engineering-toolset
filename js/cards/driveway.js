@@ -25,7 +25,7 @@ FST.card({
     };
     const wr = s.rural ? D.ruralWidth : D.width[{ res: 'res', one: 'nonresOne', two: 'nonresTwo' }[s.use]];
     add('Driveway width', wr[0], wr[1], 'ft', s.rural ? ['s2323'] : ['t238'], 50,
-      `At the nearest points of the radius returns.${s.use === 'two' ? ' Median driveways may be wider: 4–14 ft raised median, each lane within one-way limits (§2.3.23(13)).' : ''}`);
+      `Measured at the nearest points of the radius returns.${s.use === 'two' ? ' Median driveways may be wider: 4–14 ft raised median, each lane within one-way limits (§2.3.23(13)).' : ''}`);
     const rk = s.use === 'res' ? 'res' : cls.group === 'arterial' ? 'arterial' : cls.group === 'collector' ? 'collector' : 'local';
     const rr = D.radius[rk];
     add('Return radius', rr[0], rr[1], 'ft', ['t239'], 60, s.use === 'res' ? 'A flare may be used instead of a curve for residential driveways.' : null);
@@ -45,15 +45,15 @@ FST.card({
       if (s.use === 'res') { allowed = '1, only where no alternative access exists'; txt = 'Residential lots generally may not access collectors; where no alternative exists, one driveway for 125 ft of frontage or less.'; }
       else { allowed = s.frontage < 300 ? '1' : '1 (more with agency approval)'; txt = 'Collector: one driveway under 300 ft of frontage; more only with agency approval.'; }
     } else {
-      allowed = s.frontage < 100 ? '1' : '1 (more with approval, at least 50 ft apart)';
-      txt = 'Local: one driveway under 100 ft of frontage; more only with approval, and at least 50 ft apart.';
+      allowed = s.frontage < 100 ? '1' : '1 (more with agency approval, at least 50 ft apart)';
+      txt = 'Local: one driveway under 100 ft of frontage; more only with agency approval, and at least 50 ft apart.';
     }
     R.push(ui.val(`Driveways allowed for ${ui.fmt(s.frontage)} ft of frontage`, allowed, ['s2323'], txt));
     if (cls.group === 'arterial' || cls.group === 'collector') {
       R.push(ui.info('Corner lots take access from the lower-classified street', ['s2323']));
-      if (s.use !== 'res') R.push(ui.info(`A deceleration lane is required if the use adds > ${D.decelTrigger.daily} trips/day or > ${D.decelTrigger.peak} peak-hour trips — see the turn lane card`, ['s2323']));
+      if (s.use !== 'res') R.push(ui.info(`A deceleration lane is required if the use adds more than ${ui.fmt(D.decelTrigger.daily)} trips/day or ${ui.fmt(D.decelTrigger.peak)} peak-hour trips — see the Turn lane card`, ['s2323']));
     }
-    if (s.rural) R.push(ui.val('Culvert under the driveway', '15 in minimum, 24 in cover', ['s2323'], 'Flared end sections; paved within the right-of-way.'));
+    if (s.rural) R.push(ui.val('Culvert under the driveway', '15 in minimum diameter, 24 in minimum cover', ['s2323'], 'Flared end sections; paved within the right-of-way.'));
     R.push(ui.info('Concrete (PCC) from the street to the right-of-way line or back of sidewalk; driveway sight distance per the intersection sight distance card', ['s2323', 'gbIsd']));
 
     return {

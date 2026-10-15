@@ -8,9 +8,9 @@ FST.card({
   fields(c, s, set) {
     const u = c.ui;
     return [
-      u.range({ label: 'Major street design speed', min: 15, max: 60, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v), hint: 'Defaults to the selected classification. Use the speed of the street being entered.' }),
+      u.range({ label: 'Major street design speed', min: 15, max: 60, step: 5, value: s.V, unit: 'mph', onChange: (v) => set('V', v), hint: 'Defaults to the selected classification. Use the design speed of the major (through) street.' }),
       u.segmented({ label: 'Maneuver', value: s.kase, onChange: (v) => set('kase', v, { rebuild: true }), options: [
-        { value: 'B1', label: 'Left from stop' }, { value: 'B2', label: 'Right from stop' }, { value: 'B3', label: 'Crossing' }, { value: 'F', label: 'Left from major' }] }),
+        { value: 'B1', label: 'Left turn from stop (B1)' }, { value: 'B2', label: 'Right turn from stop (B2)' }, { value: 'B3', label: 'Crossing from stop (B3)' }, { value: 'F', label: 'Left turn from major street (F)' }] }),
       u.segmented({ label: 'Design vehicle', value: s.veh, onChange: (v) => set('veh', v), options: [
         { value: 'P', label: 'Passenger car' }, { value: 'SU', label: 'Single-unit truck' }, { value: 'WB', label: 'Combination truck' }] }),
       s.kase === 'B2' ? null : u.range({ label: 'Additional lanes crossed (beyond one)', min: 0, max: 4, step: 1, value: s.lanes, unit: 'lanes', onChange: (v) => set('lanes', v), hint: 'Count medians wider than a lane as a lane. For left turns from the major street, count opposing lanes beyond one.' }),
@@ -22,7 +22,7 @@ FST.card({
     const r = f.isd(s.kase, s.veh, s.V, s.lanes, s.kase === 'F' ? 0 : s.grade);
     const cdef = C.gb.isd[s.kase];
     const R = [
-      ui.val(`Intersection sight distance along the major street (${cdef.label})`, ui.ft(r.design), ['gbIsd', 't232'], `Computed ${ui.fmt(r.isd, 1)} ft, rounded up to 5 ft.`),
+      ui.val(`Intersection sight distance along the major street (${cdef.label})`, ui.ft(r.design), ['gbIsd', 't232'], `Computed ${ui.fmt(r.isd, 1)} ft, rounded up to the next 5 ft.`),
       ui.val('Time gap (tg)', `${r.tg.toFixed(1)} s`, ['gbIsd']),
       s.kase === 'F' ? ui.info('Measure from the turning driver in the left-turn position to the opposing approach lane', ['gbIsd'])
         : ui.val('Minor-leg decision point from the edge of the major-street traveled way', `${C.gb.isdDecisionPoint} ft (${C.gb.isdDecisionPointDesirable} ft desirable)`, ['gbIsd']),
@@ -74,7 +74,7 @@ FST.card({
       legend: ui.legend([['tri', 'Sight triangle — keep clear above 24 in'], ['sight', 'Line of sight']]),
       results: R,
       basis: [
-        ['Equation', 'AASHTO ISD = 1.47 · V(major) · tg, rounded up to 5 ft.'],
+        ['Equation', 'AASHTO ISD = 1.47 · V(major) · tg, rounded up to the next 5 ft.'],
         ['Time gaps (tg)', `${cdef.label}: passenger car ${cdef.P} s, single-unit truck ${cdef.SU} s, combination truck ${cdef.WB} s. ${cdef.perLane.P ? `Add ${cdef.perLane.P} s (car) or ${cdef.perLane.SU} s (truck) per additional lane crossed.` : 'No adjustment for additional lanes.'}`],
         ['Approach grade', s.kase === 'F' ? 'Not applied for left turns from the major street.' : `Add ${cdef.gradePerPct} s for each percent of upgrade above 3% on the stopped approach.`],
         ['TSTS requirements', 'TSTS §2.3.10: sight distance per the Green Book; 24 in obstruction height above flow line; sight distance easements on plan and profile sheets.']

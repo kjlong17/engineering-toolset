@@ -3,7 +3,7 @@ FST.about = function () {
   const { el } = FST.ui;
   const rows = Object.values(FST.sources).map((s) => el('tr', null,
     el('td', null, el('strong', null, s.short)),
-    el('td', null, s.url ? el('a', { href: s.url, rel: 'noopener noreferrer', target: '_blank' }, s.name) : s.name, s.note ? el('p', { class: 'hint' }, s.note) : null),
+    el('td', null, s.url ? el('a', { href: s.url, rel: 'noopener noreferrer', target: '_blank' }, s.name, el('span', { class: 'sr-only' }, ' (opens in a new tab)')) : s.name, s.note ? el('p', { class: 'hint' }, s.note) : null),
     el('td', null, s.edition)));
   return el('div', { class: 'about' },
     el('section', null,
@@ -14,7 +14,7 @@ FST.about = function () {
       el('h3', null, 'How design values are found'),
       el('ul', null,
         el('li', null, 'TSTS values come from the adopted Standards and the Typical Street Sections. Where the TSTS text points to another document, that document\'s method is used and cited.'),
-        el('li', null, 'Where a TSTS value and the referenced national value differ, the more restrictive governs (TSTS §1.5). Table 2.3(2) notes a and b also state that current Green Book values supersede the tabulated sight distance and radius values. Those cases show a Note.'),
+        el('li', null, 'Where a TSTS value and the referenced national value differ, the more restrictive governs (TSTS §1.5). Table 2.3(2) notes a and b also state that current Green Book values supersede the tabulated sight distance and radius values. Notes flag where another standard governs, or where the tool cannot give a value.'),
         el('li', null, 'AASHTO publications are copyrighted. Green Book values are computed from the published design equations and constants, and cited by section; AASHTO tables are not reproduced. Roadside values are shown as adapted and published by TDOT.'),
         el('li', null, 'Within State of Tennessee right-of-way, TDOT criteria govern (TSTS §1.8).'))),
     el('section', null,
@@ -30,7 +30,7 @@ FST.about = function () {
         el('li', null, 'TSTS Figures 2.3(1), 2.3(3), 2.3(4) and 2.3(5) are reserved in the 2025 edition.'))),
     el('section', null,
       el('h3', null, 'Privacy'),
-      el('p', null, 'Everything runs in your browser. No values are sent anywhere. Your selected classification and tab are kept only in this browser\'s local storage.')),
+      el('p', null, 'Everything runs in your browser. No values are sent anywhere. Your selected classification, tab and terms acknowledgment are kept only in this browser\'s local storage.')),
     el('section', null,
       el('h3', null, 'Changelog'),
       el('ul', null,

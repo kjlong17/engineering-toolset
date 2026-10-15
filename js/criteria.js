@@ -13,7 +13,7 @@ FST.sources = {
   tsts: {
     short: 'TSTS 2025',
     name: 'Transportation & Street Technical Standards (TSTS)',
-    note: 'Published by the City of Franklin, Tennessee. This tool is independent and is not affiliated with or endorsed by the City.',
+    note: 'Published by the City of Franklin, Tennessee. This tool is independent and is not affiliated with, produced by or endorsed by the City.',
     edition: '2025 edition, adopted 2025-07-01',
     url: 'https://www.franklintn.gov/'
   },
@@ -85,7 +85,7 @@ FST.classes = [
     minTangent: 200, maxGrade: 6, minGutter: 0.5, kCrest: 84, kSag: 96,
     signalApproach: { grade: 2, length: 500 },
     spacing: { signal: 2640, unsignal: 1200, hvDriveway: 800, lvDrivewayToInt: 250, lvDriveway: 250 },
-    lane: 12, median: 40, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: "6' or 8'", mup: 12, grass: 6,
+    lane: 12, median: 40, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: '6 ft or 8 ft', mup: 12, grass: 6,
     leftReq: 'Yes', rightReq: 'Yes', adt: '>35,000',
     arc: { res: 400, com: 400 }, parkingAllowed: false, cdsAllowed: false,
     vehicle: 'P, S-40 transit bus, SU, school bus and WB-67 turn in lane without tracking onto curb',
@@ -99,7 +99,7 @@ FST.classes = [
     minTangent: 150, maxGrade: 7, minGutter: 0.5, kCrest: 61, kSag: 79,
     signalApproach: { grade: 2, length: 500 },
     spacing: { signal: 1320, unsignal: 600, hvDriveway: 600, lvDrivewayToInt: 250, lvDriveway: 250 },
-    lane: 12, median: 36, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: "6' or 8'", mup: 12, grass: 6,
+    lane: 12, median: 36, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: '6 ft or 8 ft', mup: 12, grass: 6,
     leftReq: 'Yes', rightReq: 'Yes', adt: '20,000–35,000',
     arc: { res: 300, com: 300 }, parkingAllowed: false, cdsAllowed: false,
     vehicle: 'P, S-40 transit bus, SU, school bus and WB-67 turn in lane without tracking onto curb',
@@ -113,7 +113,7 @@ FST.classes = [
     minTangent: 150, maxGrade: 8, minGutter: 0.5, kCrest: 44, kSag: 64,
     signalApproach: { grade: 3, length: 400 },
     spacing: { signal: 1320, unsignal: 300, hvDriveway: 300, lvDrivewayToInt: 230, lvDriveway: 150 },
-    lane: 12, median: 30, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: "6' or 8'", mup: 12, grass: 6,
+    lane: 12, median: 30, curb: 'Vertical', bike: 5, parking: null, sidewalk: 6, sidewalkNote: '6 ft or 8 ft', mup: 12, grass: 6,
     leftReq: 'Yes', rightReq: 'Maybe', adt: '15,000–20,000',
     arc: { res: 250, com: 300 }, parkingAllowed: false, cdsAllowed: false,
     vehicle: 'P, S-40 transit bus, SU, school bus and WB-62 turn in lane without tracking onto curb',
@@ -127,7 +127,7 @@ FST.classes = [
     minTangent: 100, maxGrade: 8, minGutter: 0.5, kCrest: 29, kSag: 49,
     signalApproach: { grade: 3, length: 300 },
     spacing: { signal: null, unsignal: 300, hvDriveway: 300, lvDrivewayToInt: 230, lvDriveway: 150 },
-    lane: 12, median: null, curb: 'Vertical', bike: 5, parking: 8, sidewalk: 6, sidewalkNote: "6' or 8'", mup: 12, grass: 6,
+    lane: 12, median: null, curb: 'Vertical', bike: 5, parking: 8, sidewalk: 6, sidewalkNote: '6 ft or 8 ft', mup: 12, grass: 6,
     leftReq: 'Yes', rightReq: 'Maybe', adt: '10,000–15,000',
     arc: { res: 250, com: 250 }, parkingAllowed: true, cdsAllowed: false,
     vehicle: 'P, SU, school bus turn in lane; WB-50 may use full width without tracking onto curb',
@@ -141,7 +141,7 @@ FST.classes = [
     minTangent: 100, maxGrade: 8, minGutter: 0.5, kCrest: 19, kSag: 37,
     signalApproach: { grade: 4, length: 200 },
     spacing: { signal: null, unsignal: 200, hvDriveway: 200, lvDrivewayToInt: 125, lvDriveway: 50 },
-    lane: 12, median: null, curb: 'Vertical', bike: null, parking: 8, sidewalk: 5, sidewalkNote: "5'", mup: null, grass: 6,
+    lane: 12, median: null, curb: 'Vertical', bike: null, parking: 8, sidewalk: 5, sidewalkNote: '5 ft', mup: null, grass: 6,
     leftReq: 'Yes', rightReq: 'No', adt: '2,000–5,000',
     arc: { res: 100, com: 200 }, parkingAllowed: true, cdsAllowed: true,
     vehicle: 'P, SU-30, school bus turn in lane; WB-50 may use full width without tracking onto curb',
@@ -155,7 +155,7 @@ FST.classes = [
     minTangent: 20, maxGrade: 10, minGutter: 0.5, minGutterNote: '0.5–1.0', kCrest: 7, kSag: 17,
     signalApproach: { grade: 4, length: 100 },
     spacing: { signal: null, unsignal: 200, hvDriveway: 200, lvDrivewayToInt: 50, lvDriveway: 20 },
-    lane: 11, median: null, curb: 'Vertical or Mountable', bike: null, parking: 8, sidewalk: 5, sidewalkNote: "5'", mup: null, grass: 6,
+    lane: 11, median: null, curb: 'Vertical or Mountable', bike: null, parking: 8, sidewalk: 5, sidewalkNote: '5 ft', mup: null, grass: 6,
     leftReq: 'Yes', rightReq: 'No', adt: '<2,000',
     arc: { res: 100, com: 200 }, parkingAllowed: true, cdsAllowed: true,
     vehicle: 'P, SU-30, school bus turn in lane; WB-50 may use full width without tracking onto curb',
@@ -181,49 +181,49 @@ FST.classes = [
 FST.sections = {
   majArt: [
     { id: 'bike', label: 'With bike lanes', row: 136, left: null,
-      parts: [['median', 20, 'Median (½ of 40\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
+      parts: [['median', 20, 'Median (half of 40 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
     { id: 'mup', label: 'With multi-use trail (trail side)', row: 132,
-      parts: [['median', 20, 'Median (½ of 40\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
+      parts: [['median', 20, 'Median (half of 40 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
   ],
   minArt: [
     { id: 'bike', label: 'With bike lanes', row: 132,
-      parts: [['median', 18, 'Median (½ of 36\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
+      parts: [['median', 18, 'Median (half of 36 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
     { id: 'mup', label: 'With multi-use trail (trail side)', row: 128,
-      parts: [['median', 18, 'Median (½ of 36\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
+      parts: [['median', 18, 'Median (half of 36 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
   ],
   majCol: [
     { id: 'bike', label: 'With bike lanes', row: 126,
-      parts: [['median', 15, 'Median (½ of 30\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
+      parts: [['median', 15, 'Median (half of 30 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 1.75, 'Back of walk']] },
     { id: 'mup', label: 'With multi-use trail (trail side)', row: 122,
-      parts: [['median', 15, 'Median (½ of 30\')'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Traffic lane'], ['lane', 12, 'Traffic lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
+      parts: [['median', 15, 'Median (half of 30 ft)'], ['mcurb', 2.75, 'Median curb'], ['lane', 12, 'Travel lane'], ['lane', 12, 'Travel lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 1.75, 'Back of trail']] }
   ],
   minCol: [
     { id: 'bike', label: 'With bike lanes and center turn lane', row: 79,
-      parts: [['twltl', 6, 'Center turn lane (½ of 12\')'], ['lane', 12, 'Traffic lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 2, 'Back of walk (2\' with TWLTL)']] },
+      parts: [['twltl', 6, 'Center turn lane (half of 12 ft)'], ['lane', 12, 'Travel lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 2, 'Back of walk (2 ft with center turn lane)']] },
     { id: 'bikeNo', label: 'With bike lanes, no center turn lane', row: 79,
-      parts: [['lane', 12, 'Traffic lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 8, 'Back of walk (8\' without TWLTL)']] },
+      parts: [['lane', 12, 'Travel lane'], ['bike', 5, 'Bike lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 6, 'Sidewalk'], ['back', 8, 'Back of walk (8 ft without center turn lane)']] },
     { id: 'mup', label: 'With multi-use trail (trail side)', row: 75,
-      parts: [['twltl', 6, 'Center turn lane (½ of 12\')'], ['lane', 12, 'Traffic lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 2, 'Back of trail']] }
+      parts: [['twltl', 6, 'Center turn lane (half of 12 ft)'], ['lane', 12, 'Travel lane'], ['curb', 2.5, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['mup', 12, 'Multi-use trail'], ['back', 2, 'Back of trail']] }
   ],
   hvLocal: [
     { id: 'std', label: 'Standard (no center turn lane)', row: 54,
-      parts: [['lane', 12, 'Traffic lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
+      parts: [['lane', 12, 'Travel lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
     { id: 'twltl', label: 'With center turn lane', row: 66,
-      parts: [['twltl', 6, 'Center turn lane (½ of 12\')'], ['lane', 12, 'Traffic lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
+      parts: [['twltl', 6, 'Center turn lane (half of 12 ft)'], ['lane', 12, 'Travel lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
     { id: 'park', label: 'With on-street parking', row: 54,
-      parts: [['lane', 12, 'Traffic lane'], ['park', 8, 'On-street parking'], ['walk', 7, 'Sidewalk']] }
+      parts: [['lane', 12, 'Travel lane'], ['park', 8, 'On-street parking'], ['walk', 7, 'Sidewalk']] }
   ],
   lvLocal: [
     { id: 'std', label: 'Standard', row: 52,
-      parts: [['lane', 11, 'Traffic lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
+      parts: [['lane', 11, 'Travel lane'], ['curb', 2, 'Curb & gutter'], ['grass', 6, 'Grass strip'], ['walk', 5, 'Sidewalk'], ['back', 2, 'Back of walk']] },
     { id: 'park', label: 'With on-street parking', row: 52,
-      parts: [['lane', 11, 'Traffic lane'], ['park', 8, 'On-street parking'], ['walk', 7, 'Sidewalk']] }
+      parts: [['lane', 11, 'Travel lane'], ['park', 8, 'On-street parking'], ['walk', 7, 'Sidewalk']] }
   ],
   alley: [
     { id: 'alley', label: 'Alley', row: 20,
-      parts: [['lane', 8, 'Traffic lane (½ of 16\')'], ['curb', 2, 'Curb']] },
+      parts: [['lane', 8, 'Travel lane (half of 16 ft)'], ['curb', 2, 'Curb']] },
     { id: 'mews', label: 'Mews', row: 26,
-      parts: [['lane', 11, 'Traffic lane (½ of 22\')'], ['curb', 2, 'Curb']] }
+      parts: [['lane', 11, 'Travel lane (half of 22 ft)'], ['curb', 2, 'Curb']] }
   ]
 };
 
@@ -264,7 +264,7 @@ FST.criteria = {
   },
   rationalMaxAcres: 100,
   /* Ch. 3 §3.2.1(3) and Ch. 7 §7.3 storm pipe */
-  pipe: { minDia: 15, minSlope: 0.50, minCover: 24, manningN: 0.013, material: 'RCP, Class III',
+  pipe: { minDia: 15, minSlope: 0.50, minCover: 24, manningN: 0.013, material: 'Reinforced concrete pipe (RCP), Class III',
     sizes: [15, 18, 21, 24, 27, 30, 36, 42, 48, 54, 60, 66, 72] },  // standard RCP diameters (ASTM C76)
   bridgeFreeboard: 1.0,
 

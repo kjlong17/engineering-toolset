@@ -10,18 +10,18 @@ An engineering reference for street design. For the inputs you enter, each tool 
 
 | Tab | Card | Main sources |
 |---|---|---|
-| Alignment | Vertical curve: SSD, K, minimum length, PVC/PVT and high/low point | TSTS Table 2.3(2), §2.3.9; AASHTO GB §3.2.2, §3.4.6 |
+| Alignment | Vertical curve and stopping sight distance: K, minimum length, PVC/PVT and high/low point | TSTS Table 2.3(2), §2.3.9; AASHTO GB §3.2.2, §3.4.6 |
 | Alignment | Horizontal curve: minimum radius, tangents, curve elements, sightline offset | TSTS Tables 2.3(2), 2.3(4), §2.3.8; AASHTO GB §3.3 |
-| Alignment | Grade, grade break and cross slope limits | TSTS Tables 2.3(2), 2.3(5), §2.3.8(7), §2.3.9 |
+| Alignment | Grades, grade breaks and cross slope | TSTS Tables 2.3(2), 2.3(5), §2.3.8(7), §2.3.9 |
 | Intersections | Intersection sight distance | TSTS §2.3.10; AASHTO GB §9.5.3 |
 | Intersections | Turn lane need and length | TSTS Table 2.3(1), §2.3.13(8)–(10), §2.3.23(7); TDOT HSAM Vol. 3 Tables 3-11, 3-12 |
-| Intersections | Taper lengths | TSTS §2.3.11; TDOT HSAM Figs. 3-21, 3-22; MUTCD Table 2C-3 |
+| Intersections | Taper length | TSTS §2.3.11; TDOT HSAM Figs. 3-21, 3-22; MUTCD Table 2C-3 |
 | Intersections | Intersection and access spacing | TSTS Table 2.3(2), §2.3.13, §2.3.15, §2.3.16, §2.3.23 |
-| Cross section & access | Typical section widths, cul-de-sac, clearances | TSTS Typical Sections TS-1 to TS-7, Table 2.3(1), §2.3.7, §2.3.21 |
-| Cross section & access | Driveway dimensions and number allowed | TSTS §2.3.23, Tables 2.3(8), 2.3(9) |
-| Roadside safety | Clear zone, shielding need and length of need | TSTS §2.3.18–2.3.19, Ch. 7 §7.8; TDOT S-CZ-1, S-PL-1, RDG §2-302 |
-| Drainage | Design storm, allowable spread and gutter capacity | TSTS Table 3.1, §3.2.1(2), §3.2.2; FHWA HEC-22 |
-| Drainage | Storm sewer pipe size | TSTS §3.2.1(3), Ch. 7 §7.3; Manning |
+| Cross section & access | Typical section: widths, cul-de-sac, clearances, emergency access | TSTS Typical Sections TS-1 to TS-7, Table 2.3(1), §2.3.7, §2.3.21 |
+| Cross section & access | Driveway design: dimensions and number allowed | TSTS §2.3.23, Tables 2.3(8), 2.3(9) |
+| Roadside safety | Guardrail need and length of need: clear zone, shielding need | TSTS §2.3.18–2.3.19, Ch. 7 §7.8; TDOT S-CZ-1, S-PL-1, TDOT RDG §2-302 |
+| Drainage | Gutter spread and design storm: allowable spread, gutter capacity | TSTS Table 3.1, §3.2.1(2), §3.2.2; FHWA HEC-22 |
+| Drainage | Storm sewer pipe: size, capacity, TSTS minimums | TSTS §3.2.1(3), Ch. 7 §7.3; Manning |
 
 ## How it is built
 

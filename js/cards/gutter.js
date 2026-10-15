@@ -2,7 +2,7 @@
 FST.card({
   id: 'gutter', tab: 'drain',
   title: 'Gutter spread and design storm',
-  intro: 'Gives the design storm for the classification, the allowable spread (half the travel lane), the gutter capacity at that spread, and the spread for a design flow.',
+  intro: 'Gives the design storm for the classification, the allowable spread (gutter, any bike lane or shoulder, plus half the travel lane), the gutter capacity at that spread, and the spread for a design flow.',
   cites: ['c31', 's3212', 's322', 'hec22'],
   defaults: (c) => ({ facility: 'inlet', Q: 2.0, SL: 1.0, Sx: 2.0, n: 0.016, gutterW: 2, side: c.cls.bike ? 'bike' : c.cls.parking ? 'park' : 'none', sideW: c.cls.bike || c.cls.parking || 0,
     useRat: false, Cc: 0.5, i: 6.0, A: 2 }),
@@ -16,11 +16,11 @@ FST.card({
         u.select({ label: 'Runoff coefficient C', value: s.Cc, onChange: (v) => set('Cc', +v), options: [
           { value: 0.3, label: '0.30 — lawns, parks' }, { value: 0.5, label: '0.50 — single-family residential' }, { value: 0.7, label: '0.70 — multifamily / mixed' },
           { value: 0.85, label: '0.85 — commercial' }, { value: 0.95, label: '0.95 — pavement and roofs' }] }),
-        u.range({ label: 'Rainfall intensity for the design storm and Tc', min: 0.5, max: 12, step: 0.1, value: s.i, unit: 'in/h', onChange: (v) => set('i', v), hint: 'From the approved local IDF data (NOAA Atlas 14 per TDOT Drainage Manual).' }),
+        u.range({ label: 'Rainfall intensity for the design storm and time of concentration (Tc)', min: 0.5, max: 12, step: 0.1, value: s.i, unit: 'in/h', onChange: (v) => set('i', v), hint: 'From the approved local intensity-duration-frequency (IDF) data (NOAA Atlas 14 per TDOT Drainage Manual).' }),
         u.range({ label: 'Drainage area to the inlet', min: 0.1, max: 120, step: 0.1, value: s.A, unit: 'ac', onChange: (v) => set('A', v) }))
         : u.range({ label: 'Gutter flow at the inlet (design storm)', min: 0.1, max: 15, step: 0.1, value: s.Q, unit: 'cfs', onChange: (v) => set('Q', v) }),
-      u.range({ label: 'Longitudinal (gutter) slope', min: 0.3, max: 10, step: 0.1, value: s.SL, unit: '%', onChange: (v) => set('SL', v) }),
-      u.range({ label: 'Pavement cross slope', min: 1, max: 5, step: 0.1, value: s.Sx, unit: '%', onChange: (v) => set('Sx', v) }),
+      u.range({ label: 'Longitudinal gutter slope (SL)', min: 0.3, max: 10, step: 0.1, value: s.SL, unit: '%', onChange: (v) => set('SL', v) }),
+      u.range({ label: 'Pavement cross slope (Sx)', min: 1, max: 5, step: 0.1, value: s.Sx, unit: '%', onChange: (v) => set('Sx', v) }),
       u.select({ label: "Manning's n (pavement)", value: s.n, onChange: (v) => set('n', +v), options: [{ value: 0.013, label: '0.013 — smooth concrete' }, { value: 0.016, label: '0.016 — asphalt (HEC-22 typical)' }] }),
       u.range({ label: 'Gutter pan width', min: 0, max: 3, step: 0.5, value: s.gutterW, unit: 'ft', onChange: (v) => set('gutterW', v) }),
       u.select({ label: 'Lane next to the gutter', value: s.side, onChange: (v) => set('side', v), options: [
@@ -44,7 +44,7 @@ FST.card({
     const usable = s.side === 'bike' || s.side === 'shoulder' ? s.sideW : 0;
     const allowed = s.gutterW + usable + lane / 2;
     const qAllow = f.gutterCapacity(allowed, s.n, s.Sx / 100, s.SL / 100);
-    R.push(ui.val('Allowable spread from face of curb', ui.ft(allowed, 1), ['s3212'], `Gutter ${s.gutterW} ft${usable ? ` + ${s.side} ${usable} ft` : ''} + ½ of the ${lane} ft travel lane.`));
+    R.push(ui.val('Allowable spread from face of curb', ui.ft(allowed, 1), ['s3212'], `Gutter ${s.gutterW} ft${usable ? ` + ${s.side === 'bike' ? 'bike lane' : 'shoulder'} ${usable} ft` : ''} + ½ of the ${lane} ft travel lane.`));
     R.push(ui.val('Gutter capacity at the allowable spread', `${ui.fmt(qAllow, 2)} cfs`, ['s3212', 'hec22'], `Place inlets so the ${C.storm[cls.storm].inlet}-year gutter flow does not exceed this. Depth at curb ${ui.fmt(allowed * s.Sx / 100 * 12, 1)} in.`));
     R.push(ui.val(`Spread for ${ui.fmt(Q, 2)} cfs`, ui.ft(T, 1), ['hec22'], `Depth at curb ${ui.fmt(T * s.Sx / 100 * 12, 1)} in.`));
     if (s.side === 'park') R.push(ui.note('Parking lanes are not listed in §3.2.1(2) as usable for spread; counted as zero here — confirm with the approving agency', ['s3212']));

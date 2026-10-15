@@ -27,18 +27,35 @@ window.FST = window.FST || {};
     const s = def.defaults(c);
     const headId = 'h-' + def.id;
     const inputs = el('div', { class: 'inputs' });
-    const viz = el('figure', { class: 'viz', tabindex: '0', 'aria-label': `${def.title} diagram` });
-    const out = el('div', { class: 'out', 'aria-live': 'polite' });
+    const viz = el('figure', { class: 'viz', 'aria-label': `${def.title} diagram` });
+    const out = el('div', { class: 'out' });
+    const status = el('p', { class: 'sr-only', role: 'status' });
     const basis = el('div', { class: 'basis-body' });
+    let announce = null, last = {};
 
     function refresh() {
       const r = def.evaluate(ctx(), s);
       viz.replaceChildren(r.svg ? r.svg.root || r.svg : '', r.legend || '', r.caption ? el('figcaption', null, r.caption) : '');
+      syncScrollable(viz);
       out.replaceChildren(FST.ui.results(r.results));
       basis.replaceChildren(...(r.basis || []).map(([k, v]) => el('div', { class: 'basis-row' }, el('dt', null, k), el('dd', null, v))));
+      // Announce the headline value once input settles, not the whole list on every slider step.
+      const vals = r.results.filter((x) => x.status === 'value');
+      const changed = vals.find((x) => last[x.label] !== x.value) || vals[0];
+      last = Object.fromEntries(vals.map((x) => [x.label, x.value]));
+      clearTimeout(announce);
+      announce = setTimeout(() => { status.textContent = changed ? `${changed.label}: ${changed.value}` : ''; }, 600);
     }
+    /* Which control has focus, as something that survives a rebuild: field label, input type, radio value. */
+    const focusKey = (n) => {
+      const f = n && inputs.contains(n) ? n.closest('.field') : null;
+      const lab = f && f.querySelector('legend, label');
+      return lab ? `${lab.textContent}|${n.type}|${n.type === 'radio' ? n.value : ''}` : null;
+    };
     function buildFields() {
+      const key = focusKey(document.activeElement);
       inputs.replaceChildren(...def.fields(ctx(), s, set).filter(Boolean));
+      if (key) for (const n of inputs.querySelectorAll('input, select')) if (focusKey(n) === key) { n.focus(); break; }
     }
     function set(key, value, opts = {}) {
       s[key] = value;
@@ -54,9 +71,15 @@ window.FST = window.FST || {};
         FST.ui.chips(def.cites)),
       el('div', { class: 'card-grid' }, inputs, viz),
       el('h3', { class: 'out-title' }, 'Design values'),
-      out,
+      out, status,
       el('details', { class: 'basis' }, el('summary', null, 'Basis — how this is computed'), el('dl', null, basis)));
   }
+
+  /* A diagram gets a tab stop only when it scrolls sideways (narrow screens), so keyboard users can scroll it. */
+  function syncScrollable(v) {
+    if (v.scrollWidth > v.clientWidth + 1) v.tabIndex = 0; else v.removeAttribute('tabindex');
+  }
+  addEventListener('resize', () => document.querySelectorAll('.viz').forEach(syncScrollable));
 
   /* ---------- Tabs ---------- */
   function renderTabs() {
@@ -84,6 +107,7 @@ window.FST = window.FST || {};
       b.tabIndex = t.id === id ? 0 : -1;
       document.getElementById('panel-' + t.id).hidden = t.id !== id;
     }
+    document.querySelectorAll(`#panel-${id} .viz`).forEach(syncScrollable);
   }
 
   function renderPanels() {
@@ -100,7 +124,8 @@ window.FST = window.FST || {};
   function renderContext() {
     const c = ctx().cls;
     document.getElementById('ctx-speed').textContent = `${c.designSpeed} mph design / ${c.postedNote || c.posted} mph posted`;
-    document.getElementById('ctx-meta').textContent = `${c.tableTS} · ADT ${c.adt}`;
+    document.getElementById('ctx-meta').textContent = c.tableTS;
+    document.getElementById('ctx-adt').textContent = c.adt === 'n/a' ? 'n/a' : `${c.adt} veh/day`;
   }
 
   /* ---------- Init ---------- */

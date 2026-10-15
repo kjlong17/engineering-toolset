@@ -44,7 +44,8 @@ FST.ui = (function () {
 
   function segmented({ label, options, value, onChange, hint }) {
     const name = nextId('seg');
-    const fs = el('fieldset', { class: 'field seg' }, el('legend', null, label));
+    const hid = hint ? nextId('h') : null;
+    const fs = el('fieldset', { class: 'field seg', 'aria-describedby': hid }, el('legend', null, label));
     const wrap = el('div', { class: 'seg-opts' });
     for (const o of options) {
       const id = nextId('r');
@@ -54,7 +55,7 @@ FST.ui = (function () {
       wrap.append(el('span', { class: 'seg-opt' }, input, el('label', { for: id }, o.label)));
     }
     fs.append(wrap);
-    if (hint) fs.append(el('p', { class: 'hint' }, hint));
+    if (hint) fs.append(hintEl(hid, hint));
     return fs;
   }
 
@@ -63,14 +64,23 @@ FST.ui = (function () {
     const id = nextId('rng'), hid = hint ? id + '-h' : null;
     const r = el('input', { type: 'range', id, min, max, step, value, 'aria-describedby': hid });
     const n = el('input', { type: 'number', min, max, step, value, class: 'num', 'aria-label': `${label} (${unit || 'value'})` });
+    const valueText = (v) => (unit ? `${v} ${unit}` : String(v));
+    r.setAttribute('aria-valuetext', valueText(value));
     const sync = (v, src) => {
-      if (v === '' || isNaN(+v)) return;
+      if (v === '' || isNaN(+v) || +v < +min || +v > +max) return;
       if (src !== r) r.value = v;
       if (src !== n) n.value = v;
+      r.setAttribute('aria-valuetext', valueText(v));
       onChange(+v);
     };
     r.addEventListener('input', () => sync(r.value, r));
     n.addEventListener('input', () => sync(n.value, n));
+    // On commit, pull a value typed outside the range back to the nearest limit.
+    n.addEventListener('change', () => {
+      if (n.value === '' || isNaN(+n.value)) { n.value = r.value; return; }
+      const v = Math.min(+max, Math.max(+min, +n.value));
+      if (v !== +n.value) { n.value = v; sync(String(v), n); }
+    });
     return el('div', { class: 'field range' },
       el('label', { for: id }, label),
       el('div', { class: 'range-row' }, r, el('span', { class: 'num-wrap' }, n, unit ? el('span', { class: 'unit', 'aria-hidden': 'true' }, unit) : null)),
@@ -78,15 +88,15 @@ FST.ui = (function () {
   }
 
   function toggle({ label, checked, onChange, hint }) {
-    const id = nextId('tg');
-    const i = el('input', { type: 'checkbox', id, role: 'switch' });
+    const id = nextId('tg'), hid = hint ? id + '-h' : null;
+    const i = el('input', { type: 'checkbox', id, role: 'switch', 'aria-describedby': hid });
     i.checked = !!checked;
     i.addEventListener('change', () => onChange(i.checked));
-    return el('div', { class: 'field toggle' }, el('span', { class: 'toggle-row' }, i, el('label', { for: id }, label)), hint ? el('p', { class: 'hint' }, hint) : null);
+    return el('div', { class: 'field toggle' }, el('span', { class: 'toggle-row' }, i, el('label', { for: id }, label)), hintEl(hid, hint));
   }
 
   function group(title, ...fields) {
-    return el('div', { class: 'field-group' }, el('p', { class: 'group-title' }, title), ...fields);
+    return el('fieldset', { class: 'field-group' }, el('legend', { class: 'group-title' }, title), ...fields);
   }
 
   /* ---------- Citations ---------- */
@@ -145,7 +155,8 @@ FST.ui = (function () {
     const root = document.createElementNS(NS, 'svg');
     root.setAttribute('viewBox', `0 0 ${w} ${h}`);
     root.setAttribute('role', 'img');
-    root.setAttribute('aria-labelledby', `${id}-t ${id}-d`);
+    root.setAttribute('aria-labelledby', `${id}-t`);
+    root.setAttribute('aria-describedby', `${id}-d`);
     root.setAttribute('class', 'diagram');
     const t = document.createElementNS(NS, 'title'); t.id = `${id}-t`; t.textContent = title;
     const d = document.createElementNS(NS, 'desc'); d.id = `${id}-d`; d.textContent = desc;

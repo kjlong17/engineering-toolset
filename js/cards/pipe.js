@@ -10,7 +10,7 @@ FST.card({
     const sizes = c.C.pipe.sizes.map((d) => ({ value: d, label: `${d} in` }));
     return [
       u.range({ label: '10-year design flow in this run', min: 0.1, max: 150, step: 0.1, value: s.Q, unit: 'cfs', onChange: (v) => set('Q', v) }),
-      u.range({ label: 'Pipe slope', min: c.C.pipe.minSlope, max: 10, step: 0.05, value: s.S, unit: '%', onChange: (v) => set('S', v), hint: `TSTS minimum ${c.C.pipe.minSlope}%.` }),
+      u.range({ label: 'Pipe slope', min: c.C.pipe.minSlope, max: 10, step: 0.05, value: s.S, unit: '%', onChange: (v) => set('S', v), hint: `TSTS minimum ${c.ui.pct(c.C.pipe.minSlope, 2)}.` }),
       u.select({ label: 'Largest pipe entering upstream', value: s.up, options: [{ value: 0, label: 'None (first run)' }, ...sizes], onChange: (v) => set('up', +v), hint: 'Pipes may not be downsized downstream.' }),
       u.toggle({ label: 'Pipe is in public right-of-way or easement', checked: s.row, onChange: (v) => set('row', v) })
     ];
@@ -28,17 +28,17 @@ FST.card({
     const full = f.pipeFull(Dd, S, P.manningN);
     const dep = f.pipeDepth(Dd, S, P.manningN, s.Q);
     if (D != null) {
-      R.push(ui.val('Pipe diameter', `${D} in`, ['s3213', 's73', 'hec22m'],
+      R.push(ui.val('Required pipe diameter', `${D} in`, ['s3213', 's73', 'hec22m'],
         `Smallest standard size ≥ ${minD} in${s.up && s.up >= P.minDia ? ' (no downsizing from the upstream pipe)' : ` (TSTS ${P.minDia} in minimum)`} whose full-flow capacity carries the 10-year flow.`));
       R.push(ui.val('Full-flow capacity', `${ui.fmt(full.Q, 2)} cfs`, ['hec22m'], `Manning n = ${P.manningN}, S = ${ui.pct(S * 100)}. Full-flow velocity ${ui.fmt(full.V, 1)} ft/s.`));
-      if (!dep.surcharged) R.push(ui.val('Normal depth and velocity at the design flow', `${Math.round(dep.ratio * 100)}% of diameter, ${ui.fmt(dep.V, 1)} ft/s`, ['hec22m'], 'Confirm with an HGL analysis including junction losses and tailwater.'));
+      if (!dep.surcharged) R.push(ui.val('Normal depth and velocity at the design flow', `${Math.round(dep.ratio * 100)}% of diameter, ${ui.fmt(dep.V, 1)} ft/s`, ['hec22m'], 'Confirm with a hydraulic grade line (HGL) analysis including junction losses and tailwater.'));
     }
-    R.push(ui.val('Minimum pipe size', `${P.minDia} in`, ['s73'], 'Side drains and storm sewers.'));
+    R.push(ui.val('TSTS minimum pipe diameter', `${P.minDia} in`, ['s73'], 'Side drains and storm sewers.'));
     R.push(ui.val('Minimum pipe slope', ui.pct(P.minSlope, 2), ['s3213']));
     R.push(ui.val('Minimum cover to top of pavement', `${P.minCover} in`, ['s738']));
     R.push(ui.val('Inflow angle at a structure', '90° or more to the outlet direction', ['s3213'], 'No hydraulic jump in the pipe.'));
     if (s.row) R.push(ui.val('Material in right-of-way', P.material, ['s73'], 'Corrugated metal and PVC are prohibited; HDPE only outside the right-of-way (36 in max).'));
-    R.push(ui.info('Pipe ends need a structure, endwall or safety end section; culverts under roads follow Table 3.1 (50-yr, 100-yr check). Bridges: low chord ≥ 1 ft above the 100-yr flood', ['s3213', 's74', 's76', 'c31']));
+    R.push(ui.info('Pipe ends need a structure, endwall or safety end section; culverts under roads follow Table 3.1 (50-year design, 100-year check). Bridges: low chord ≥ 1 ft above the 100-year flood', ['s3213', 's74', 's76', 'c31']));
 
     // ---- Diagram: pipe section + cover sketch ----
     const W = 640, H = 260;
@@ -71,7 +71,7 @@ FST.card({
       legend: ui.legend([['water', 'Design flow'], ['req', 'Minimum cover line']]),
       results: R,
       basis: [
-        ['TSTS minimums', 'Ch. 7 §7.3: 15 in minimum for side drains and storm sewers; RCP Class III in right-of-way; §7.3.8: 24 in cover to top of pavement. Ch. 3 §3.2.1(3): 0.50% minimum slope; 10-yr flow not above the inside crown and no hydraulic jump; downstream area ≥ upstream; inflow ≥ 90° to the outlet.'],
+        ['TSTS minimums', 'Ch. 7 §7.3: 15 in minimum for side drains and storm sewers; RCP Class III in right-of-way; §7.3.8: 24 in cover to top of pavement. Ch. 3 §3.2.1(3): 0.50% minimum slope; 10-year flow not above the inside crown and no hydraulic jump; downstream area ≥ upstream; inflow ≥ 90° to the outlet.'],
         ['Sizing', `Smallest standard RCP size (${P.sizes.join(', ')} in) whose Manning full-flow capacity Q = (1.49/n)·A·R^(2/3)·S^(1/2) ≥ the 10-year flow, n = ${P.manningN}. Normal depth found by iteration on the circular section.`],
         ['Limits', 'A single-run normal-depth sizing. The full storm sewer design still needs an HGL analysis with junction losses and tailwater (HEC-22).']
       ]

@@ -26,7 +26,7 @@ FST.card({
     } else if (s.mode === 'bay') {
       const b = f.bayTaper(s.W, s.V);
       req = Math.ceil(b.length - 1e-9);
-      eq = `L = WS/3 = ${ui.fmt(b.raw, 1)} ft, held between 8:1 (${b.min} ft) and 15:1 (${b.max} ft)`;
+      eq = `L = WS/3 = ${ui.fmt(b.raw, 1)} ft, limited to 8:1 (${b.min} ft) to 15:1 (${b.max} ft)`;
       R.push(ui.val('Turn-lane bay taper', `${ui.ft(req)} (${(req / s.W).toFixed(1)}:1)`, ['hsamTaper'], eq));
       R.push(ui.val('Allowed bay taper range', `${ui.fmt(b.min)}–${ui.fmt(b.max)} ft (8:1 to 15:1)`, ['hsamTaper']));
       R.push(ui.info('The departure taper may be no sharper than the approach taper', ['hsamTaper']));
@@ -34,7 +34,7 @@ FST.card({
       const d = f.laneDrop(s.V);
       req = d ? d.X : null;
       const taper = Math.ceil(f.taperTsts(s.W, s.V) - 1e-9);
-      eq = d ? `X = 750 ft + d = 750 + ${d.d} (MUTCD Condition A at ${s.V} mph)` : 'Speed outside table';
+      eq = d ? `X = 750 + d = 750 + ${d.d} = ${ui.fmt(d.X)} ft (d from MUTCD Table 2C-3, Condition A)` : 'No MUTCD Condition A value at this speed';
       parts = { X: req, taper };
       if (req) R.push(ui.val('Lane extension past the intersection before the merge taper (X)', ui.ft(req), ['hsamDrop', 'mutcdDrop'], eq));
       R.push(ui.val('Merge taper after the extension', ui.ft(taper), ['s2311', 'hsamDrop'], s.V <= 40 ? 'L = WS²/60' : 'L = WS'));
@@ -76,9 +76,9 @@ FST.card({
       legend: ui.legend([['pave', 'Pavement'], ['ok', 'Taper']]),
       results: R,
       basis: [
-        ['Lane transition', 'TSTS §2.3.11: L = WS²/60 for S ≤ 40 mph; L = WS for S > 40 mph. W = lateral offset (ft); S = design speed (mph). TDOT uses the same formulas with the break at 45 mph; results match at 5-mph design speeds. Lengths are rounded up to the next foot.'],
+        ['Lane transition', 'TSTS §2.3.11: L = WS²/60 for S ≤ 40 mph; L = WS for S > 40 mph. W = lateral offset (ft); S = design speed (mph). TDOT and the MUTCD use the same formulas with the break at 45 mph (WS²/60 below 45 mph, WS at 45 mph and above), so the two give the same length at design speeds in 5 mph steps. Lengths are rounded up to the next foot.'],
         ['Turn-lane bay', 'TDOT HSAM Figure 3-21: L = WS/3, minimum rate 8:1 (low speed), maximum 15:1 (higher speed). Departure taper may not be sharper than the approach taper.'],
-        ['Lane drop', 'TDOT HSAM Figure 3-22 / RDG §2-601: extend the added lane X = 750 ft + d past the intersection, where d is the MUTCD Table 2C-3 Condition A advance placement distance; then merge with L = WS or WS²/60.']
+        ['Lane drop', 'TDOT HSAM Figure 3-22 / TDOT RDG §2-601: extend the added lane X = 750 ft + d past the intersection, where d is the MUTCD Table 2C-3 Condition A advance placement distance; then merge with L = WS or WS²/60.']
       ]
     };
   }

@@ -6,6 +6,8 @@ FST.card({
   cites: ['s2318', 's2319', 's78', 's74', 'scz1', 'rdg302', 'rdg30205', 'spl1'],
   defaults: (c) => ({ curbed: c.cls.group !== 'arterial', V: c.cls.designSpeed, posted: c.cls.posted, adt: '>6000', slope: 'f4', fill: 6, fillLen: 150,
     hazard: 'object', offset: 8, extent: 6, curveR: 0, L2: 6, adtLon: 1, wall: false }),
+  /* Display form of an ADT band key, e.g. '750-1500' → '750–1,500'. */
+  adtLabel: (a) => a.replace('<', 'Under ').replace('>', 'Over ').replace(/\d{4,}/g, (n) => Number(n).toLocaleString('en-US')).replace('-', '–'),
   fields(c, s, set) {
     const u = c.ui;
     const f = [
@@ -15,7 +17,7 @@ FST.card({
     ];
     if (!s.curbed) {
       f.push(
-        u.select({ label: 'Design traffic (ADT)', value: s.adt, onChange: (v) => set('adt', v), options: FST.criteria.clearZone.adt.map((a) => ({ value: a, label: a.replace('<', 'Under ').replace('>', 'Over ') })) }),
+        u.select({ label: 'Design traffic, ADT (vehicles/day)', value: s.adt, onChange: (v) => set('adt', v), options: FST.criteria.clearZone.adt.map((a) => ({ value: a, label: this.adtLabel(a) })) }),
         u.select({ label: 'Foreslope', value: s.slope, onChange: (v) => set('slope', v, { rebuild: true }), options: [
           { value: 'f6', label: '6:1 or flatter (recoverable)' }, { value: 'f4', label: '5:1 to 4:1 (recoverable)' },
           { value: 'f3', label: '3:1 (traversable, not recoverable)' }, { value: 'crit', label: 'Steeper than 3:1 (critical)' }] }),
@@ -25,11 +27,11 @@ FST.card({
           { value: 'none', label: 'None (slope only)' }, { value: 'object', label: 'Fixed object (tree ≥ 4 in, pole, headwall, wall end, pier)' },
           { value: 'water', label: 'Water, drop-off or other non-traversable feature' }] }),
         s.hazard !== 'none' ? u.range({ label: 'Edge of travel lane to front of hazard', min: 0, max: 50, step: 0.5, value: s.offset, unit: 'ft', onChange: (v) => set('offset', v) }) : null,
-        s.hazard !== 'none' ? u.range({ label: 'Hazard depth away from road (back edge offset − front)', min: 0, max: 60, step: 0.5, value: s.extent, unit: 'ft', onChange: (v) => set('extent', v) }) : null,
+        s.hazard !== 'none' ? u.range({ label: 'Hazard width, measured away from the road', min: 0, max: 60, step: 0.5, value: s.extent, unit: 'ft', onChange: (v) => set('extent', v) }) : null,
         u.select({ label: 'Horizontal curve (outside of curve)', value: s.curveR, onChange: (v) => set('curveR', +v), options: [{ value: 0, label: 'Tangent or inside of curve' }, ...FST.criteria.kcz.rows.map((r) => ({ value: r[0], label: `R = ${r[0]} ft` }))] }),
         u.group('If shielded — length of need',
           u.range({ label: 'Edge of travel lane to face of barrier (L2)', min: 2, max: 30, step: 0.5, value: s.L2, unit: 'ft', onChange: (v) => set('L2', v) }),
-          u.select({ label: 'ADT band for runout length', value: s.adtLon, onChange: (v) => set('adtLon', +v), options: FST.criteria.runout.adt.map((a, i) => ({ value: i, label: a.replace('<', 'Under ').replace('>', 'Over ') })) }))
+          u.select({ label: 'ADT band for runout length', value: s.adtLon, onChange: (v) => set('adtLon', +v), options: FST.criteria.runout.adt.map((a, i) => ({ value: i, label: this.adtLabel(a) })) }))
       );
     }
     f.push(u.toggle({ label: 'A walk or path comes within 5 ft of the top of a retaining wall', checked: s.wall, onChange: (v) => set('wall', v) }));
@@ -39,20 +41,21 @@ FST.card({
     const { f, ui, C } = c;
     const R = [];
     let shield = false, lonVal = null, Lc = null, LR = null, LA = null;
-    const verifyNote = 'TDOT drawing values transcribed for this draft; confirm against the S-CZ-1 / S-PL-1 sheets before public release.';
+    const verifyNote = 'Clear zone and runout values were transcribed from TDOT S-CZ-1 and S-PL-1; confirm against the current drawings.';
 
     if (s.curbed) {
       const tdotMin = C.clearZone.lowSpeedOffsetMin;
       R.push(ui.val('Lateral offset, face of curb to fixed object (TSTS desirable minimum)', ui.ft(C.curbOffsetDesirable), ['s2318']));
       R.push(ui.val('TDOT low-speed urban lateral offset (reference)', `${tdotMin} ft minimum, ${C.clearZone.lowSpeedOffsetEnhanced} ft recommended`, ['scz1'], 'Reference only on local streets; the TSTS governs outside State right-of-way (§1.8).'));
       if (s.posted <= C.barrierLowSpeedPosted) R.push(ui.val('Barrier', 'Typically not recommended', ['rdg30205'], `Low-speed urban street (posted ≤ ${C.barrierLowSpeedPosted} mph). Remove, relocate or use breakaway hardware for objects instead.`));
-      else R.push(ui.note('Posted speed above 35 mph — use the clear zone method (turn off the curbed option) where curb does not redirect', ['rdg30205']));
+      else if (s.posted <= 45) R.push(ui.note(`Posted ${s.posted} mph: barrier is decided case by case. Where the curb will not redirect a vehicle, also find the clear zone (turn off the curbed option)`, ['rdg30205']));
+      else R.push(ui.note(`Posted ${s.posted} mph is above 45 mph — the lateral offset does not apply; turn off the curbed option to use the clear zone`, ['scz1']));
     } else {
       const slopeKey = s.slope === 'f6' ? 'f6' : 'f4';
       const cz = f.clearZone(s.V, s.adt, slopeKey);
       const kcz = f.kcz(s.V, s.curveR);
       Lc = Math.round(cz.high * kcz * 10) / 10;
-      R.push(ui.val('Clear zone', ui.ft(Lc, 1), ['scz1'], `S-CZ-1 range ${cz.low}–${cz.high} ft for ${cz.band} mph, ADT ${s.adt}, ${slopeKey === 'f6' ? '6:1 or flatter' : '5:1 to 4:1'} foreslope; upper value used.${kcz > 1 ? ` Outside of curve: ${cz.high} × Kcz ${kcz}.` : ''}`));
+      R.push(ui.val('Clear zone', ui.ft(Lc, 1), ['scz1'], `S-CZ-1 range ${cz.low}–${cz.high} ft for ${String(cz.band).replace('-', '–')} mph, ADT ${this.adtLabel(s.adt).toLowerCase()}, ${slopeKey === 'f6' ? '6:1 or flatter' : '5:1 to 4:1'} foreslope; upper value used.${kcz > 1 ? ` Outside of curve: ${cz.high} × curve correction factor Kcz ${kcz}.` : ''}`));
       if (s.slope === 'f3') R.push(ui.note('3:1 slope is not recoverable — the clear zone extends to the toe, with a 10 ft clear runout area desired at the bottom', ['rdg302', 'scz1']));
       if (s.slope === 'crit') {
         const exempt = s.fillLen < C.criticalFillExemption.length && s.fill < C.criticalFillExemption.drop;
@@ -82,15 +85,15 @@ FST.card({
             R.push(ui.note(`The barrier face (L2 = ${ui.ft(s.L2, 1)}) must be in front of the hazard (${ui.ft(s.offset, 1)} from the edge of the travel lane) — move the barrier closer to the road`, ['spl1']));
           } else if (lonVal <= 0) {
             lonVal = null;
-            R.push(ui.note('LA is not greater than L2, so the equation gives no length of need — check the hazard extent and barrier offset', ['spl1']));
-          } else R.push(ui.val('Length of need ahead of the hazard (approach side)', ui.ft(lonVal), ['spl1'], `LON = (LA − L2)/(LA/LR) = (${ui.fmt(LA, 1)} − ${s.L2})/(${ui.fmt(LA, 1)}/${LR}). LA is limited to the clear zone. Length of need begins at the third post of the terminal. Add the far-side length for two-way traffic, measured from the centerline.`));
+            R.push(ui.note('LA is not greater than L2, so the equation gives no length of need — review the hazard extent and barrier offset', ['spl1']));
+          } else R.push(ui.val('Length of need ahead of the hazard (approach side)', ui.ft(lonVal), ['spl1'], `LON = (LA − L2)/(LA/LR) = (${ui.fmt(LA, 1)} − ${s.L2})/(${ui.fmt(LA, 1)}/${LR}). LA = lateral extent of the hazard from the edge of the travel lane, limited to the clear zone. Length of need begins at the third post of the terminal. Add the far-side length for two-way traffic, measured from the centerline.`));
           if (s.L2 > 0) R.push(ui.info('Keep about 5 ft of deflection space behind W-beam guardrail; use concrete barrier where the object is within 5 ft of the shoulder', ['rdg302']));
         }
         R.push(ui.info('Hardware: TDOT/FHWA crash-tested systems only; wood guardrail is prohibited; type and location approved by the agency', ['s2318', 's2319']));
       }
       R.push(ui.note(verifyNote, ['scz1', 'spl1']));
     }
-    if (s.wall) R.push(ui.val('Pedestrian guard at the retaining wall', 'Required', ['s78'], 'A walk or path is within 5 ft of the top of the wall.'));
+    if (s.wall) R.push(ui.val('Pedestrian guard at the retaining wall', 'Required', ['s78'], 'Ch. 7 §7.8; guard type approved by the agency.'));
     R.push(ui.info('Culvert ends inside the clear zone need a safety end section or traversable endwall', ['s74']));
 
     // ---- Diagrams ----
@@ -148,7 +151,7 @@ FST.card({
         ['TSTS requirements', 'TSTS §2.3.18: consult the AASHTO Roadside Design Guide; desirable minimum 2 ft from face of curb to an object; guardrail type and location approved case by case; wood guardrail prohibited. §2.3.19 crash-tested barriers. Ch. 7 §7.8 guard where a path is within 5 ft of the top of a wall.'],
         ['Clear zone', 'TDOT S-CZ-1 Table A by design speed, ADT and foreslope (adapted from AASHTO RDG 2011 Table 3.1); outside of curves × Kcz (Table B). Low-speed curbed urban streets use lateral offset (Figure B).'],
         ['Warrants', 'TDOT RDG §2-302: embankments (critical slopes steeper than 3:1), obstacles within the clear zone, bridges and culverts. §2-302.05: not typically recommended on low-speed urban streets (posted ≤ 35 mph) or for critical fill under 100 ft long with less than 10 ft drop.'],
-        ['Length of need', 'TDOT S-PL-1: LON = (LA − L2)/(LA/LR), runout length LR from Table B by speed and ADT; not calculated below 30 mph. Flared barrier: AASHTO RDG §5.6.4.']
+        ['Length of need', 'TDOT S-PL-1: LON = (LA − L2)/(LA/LR), runout length LR from Table B by speed and ADT; not calculated below 30 mph. For flared barrier, see AASHTO RDG §5.6.4.']
       ]
     };
   }
