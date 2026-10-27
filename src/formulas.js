@@ -134,8 +134,13 @@ export function spiral(R, V, Cc = G.spiral.Cdefault) {
   return { lsMinOffset, lsMinComfort, lsMin: Math.max(lsMinOffset, lsMinComfort), lsMax, lsDes };
 }
 
-/* MUTCD Part 6 taper: L = WS²/60 below 45 mph; L = WS at 45 mph and above. */
+/* Taper (TDOT RDG §2-601/§2-602, MUTCD §3B.09): L = WS²/60 below 45 mph; L = WS at 45 mph and above. */
 export const taper = (W, S) => (S < C.mutcd.taperBreak ? (W * S * S) / 60 : W * S);
+/* TDOT RDG §2-601 Figure 2-9 lane drop after an intersection: X = 750 ft + d, d from Table 2-4 Condition A. Returns null if S is not tabulated. */
+export function laneDrop(S) {
+  const d = C.tdot2.condA[S];
+  return d == null ? null : { d, X: C.tdot2.laneDrop.base + d };
+}
 
 /* ---------- Roadside ---------- */
 
@@ -146,8 +151,9 @@ export function speedBand(V) {
   if (V <= 60) return '60';
   return '65-70';
 }
-/* Clear zone lookup (S-CZ-1 Table A). slope: f6 | f4 | b3 | b4 | b6. */
+/* Clear zone lookup (S-CZ-1 Table A). slope: f6 | f4 | b6 | b4 | b3. Returns null above the tabulated speeds. */
 export function clearZone(V, adt, slope) {
+  if (V > C.rdg.maxTabulatedSpeed) return null;
   const cz = C.rdg.clearZone.table[speedBand(V)][adt][slope];
   return { low: cz[0], high: cz[1], band: speedBand(V) };
 }
@@ -162,12 +168,20 @@ export function kcz(V, R) {
   const val = row[1][col];
   return val == null ? 1.5 : val;
 }
-/* S-PL-1 Table B runout length. adtIdx 0..3. Speed rounded up to the next tabulated row. */
+/* S-PL-1 Table B runout length. adtIdx 0..3. Speed rounded up to the next tabulated row; null above 70 mph. */
 export function runoutLength(V, adtIdx) {
   const rows = C.rdg.runout.rows;
   const speeds = Object.keys(rows).map(Number).sort((a, b) => a - b);
-  const s = speeds.find((x) => V <= x) ?? speeds[speeds.length - 1];
+  const s = speeds.find((x) => V <= x);
+  if (s == null) return { LR: null, speed: null };
   return { LR: rows[s][adtIdx], speed: s };
+}
+/* S-PL-1 Tables C and D: suggested length of need from Table A clear zone, Table B runout and a 6 ft shoulder. side: 'near' (L2 = 6) | 'far' (L2 = 12). */
+export function lonSuggested(V, adtIdx, side = 'near') {
+  const Lc = C.rdg.lonLcMax[V], r = runoutLength(V, adtIdx);
+  if (Lc == null || r.LR == null) return null;
+  const L2 = side === 'far' ? C.rdg.lonTables.L2far : C.rdg.lonTables.L2near;
+  return Math.round(lon(Lc, L2, r.LR));
 }
 /* RDG §5.6.4, Eq. 5-1: X = (LA + (b/a)·L1 − L2) / ((b/a) + LA/LR). flareRate is the a in b:a = 1:a; 0 for parallel. */
 export function lon(LA, L2, LR, L1 = 0, flareRate = 0) {

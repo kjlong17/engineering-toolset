@@ -1,6 +1,6 @@
 # Roadway Design Reference
 
-A desk reference for design engineers and quality reviewers who know roadway design and need a quick answer to "what was that formula or constant?" and "what is the minimum at this design speed?". It covers geometric design, roadside safety and pedestrian facilities from the **AASHTO Green Book (7th ed., 2018)**, the **TDOT Roadway Design Guidelines (Chapters 2–6)**, the **AASHTO Roadside Design Guide** as adapted on TDOT standard drawings **S-CZ-1** and **S-PL-1**, and **PROWAG (2023 final rule)**.
+A desk reference for design engineers and quality reviewers who know roadway design and need a quick answer to "what was that formula or constant?" and "what is the minimum at this design speed?". It covers geometric design, roadside safety and pedestrian facilities from the **AASHTO Green Book (7th ed., 2018)**, the **TDOT Roadway Design Guidelines** (Chapter 2 Geometric Design Criteria and Chapter 3 Multimodal Design, rev. 07/31/26), the **AASHTO Roadside Design Guide** as adapted on TDOT standard drawings **S-CZ-1** and **S-PL-1**, and **PROWAG (2023 final rule)**. The TDOT source PDFs are kept in the repository root.
 
 > Engineering reference only. It does not replace engineering judgment, a sealed design or the owner's review. Check every value against the cited source.
 
@@ -19,14 +19,14 @@ A desk reference for design engineers and quality reviewers who know roadway des
 
 | Topic | Entries |
 |---|---|
-| Design controls | AASHTO design constants; side friction f by speed; relative gradient Δ; cross slope, minimum grade, clearance |
+| Design controls | AASHTO design constants; side friction f by speed; relative gradient Δ; cross slope, shoulders, minimum grade and vertical clearance; TDOT controlling criteria, design exceptions and waivers; TDOT design vehicle |
 | Sight distance | SSD formula and table; decision sight distance; passing sight distance; intersection sight distance formula and table |
-| Horizontal alignment | Minimum radius formula and table by e_max; circular curve elements; horizontal sightline offset; superelevation runoff and runout; spiral length; taper length |
+| Horizontal alignment | Minimum radius formula and table by e_max; circular curve elements; horizontal sightline offset; superelevation runoff and runout; spiral length; approach, bay and departure tapers; lane drop after an intersection with Table 2-4 |
 | Vertical alignment | K and minimum length; K table; parabola geometry (PVC, PVT, high/low point); sag under a structure |
-| Roadside safety | Clear zone with curve correction; clear zone table; K_cz table; slopes and barrier warrants; length of need; runout length table |
-| Pedestrian (PROWAG) | Pedestrian access route; curb ramps and blended transitions; detectable warnings; crossings and signals; ramps, stairs and handrails; protruding objects; accessible on-street parking |
+| Roadside safety | Clear zone with curve correction; clear zone table; K_cz table; slopes and barrier warrants; barrier type and guardrail placement; length of need; suggested LON table; runout length table |
+| Pedestrian | PROWAG pedestrian access route, curb ramps, detectable warnings, crossings and signals, ramps, protruding objects, parking; TDOT Tables 3-1, 3-2, 3-3; midblock crossings and refuge islands; shared-use paths; bus stops; ADA upgrade triggers |
 
-Planned, not yet entered: TDOT standard design criteria tables by functional class (design speed, lane and shoulder width, maximum grade by terrain), Green Book maximum grades, Table 3-18 runoff on tangent, Table 3-19 spiral thresholds, intersection turn-lane and lane-drop criteria (TDOT RDG §2-601, HSAM), cross-section elements. Drainage is out of scope.
+Planned, not yet entered: the TDOT standard drawing criteria by functional class (RD-CTS and RD18-TS series: design speed, lane and shoulder width, maximum grade by terrain, minimum K), the RD18-SE and RD18-LR superelevation tables, Green Book Tables 3-18 and 3-19, and TDOT RDG Chapters 4 to 6. Drainage is out of scope.
 
 ## Verification
 

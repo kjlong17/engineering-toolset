@@ -1,57 +1,56 @@
-# Verification needed
+# Verification status
 
-Entries marked **Unverified** in the app carry values or section numbers that were transcribed from memory or from drawing text. This list says what document is needed to confirm each one. The container this was built in could not reach tn.gov or access-board.gov, so none of these could be checked live.
+Entries marked **Unverified** in the app carry values or section numbers that were transcribed from memory. This file says what document is needed to confirm each one, and records what has already been checked.
 
-Formulas and the values computed from them (SSD, K, R_min, ISD, DSD, curve elements, runoff, spirals, tapers, length of need) are tested against the Green Book design values and need no further check beyond a spot review of the test file.
+Formulas and the values computed from them (SSD, K, R_min, ISD, DSD, curve elements, runoff, spirals, tapers, lane drop, length of need) are tested against published design values in `tests/formulas.test.js`.
 
-## AASHTO Green Book, 7th edition (2018)
+## Checked against the source
+
+| Source | What was checked | Result |
+|---|---|---|
+| TDOT S-CZ-1, rev. 06-28-19 | Table A, all 20 rows × 5 slope columns; Table B, all 12 rows; Figure B offsets (4 ft min, 6 ft enhanced); general notes 1–10 | Corrected 5 backslope cells at 40 mph and 2 at 65–70 mph, and 6 rows of K_cz. Now matches the drawing. |
+| TDOT S-PL-1, rev. 03-01-2023 | Table A (max L_c), Table B (runout), Tables C and D (suggested LON), the LON formula, notes A–F | Removed an 80 mph runout row that is not on the drawing. Tables C and D reproduce from the formula with a 6 ft shoulder. |
+| TDOT RDG Chapter 2, rev. 07/31/26 | Controlling criteria and exception types (§2-100, §2-105, §2-201); superelevation practice and spirals (§2-101.01); shoulders (§2-101.03); cross slopes (§2-101.04); vertical clearance (§2-102.05); vertical curve relations (§2-200.02); slopes (§2-200.03, §2-302.02); clear zone notes (§2-200.04, §2-301); design vehicle (§2-200.05); barrier warrants and exceptions (§2-302); barrier type and guardrail (§2-302.07, §2-303); lane drop and Table 2-4 (§2-601); turn-lane tapers (§2-602); median left-turn alignment (§2-800.03) | Entered as cited. Vertical clearance entry rewritten to the TDOT values. |
+| TDOT RDG Chapter 3, rev. 07/31/26 | Accessibility triggers (§3-301); Tables 3-1, 3-2 (§3-402); sidewalks (§3-403, §3-404); crosswalks (§3-405); curb ramps and detectable warnings (§3-406); midblock crossings and Table 3-3 (§3-407); curb extensions (§3-408); pushbuttons and APS (§3-410); work zones (§3-417); shared-use paths (§3-600 to 3-614); transit (§3-701 to 3-703) | Entered as cited. |
+
+## Still to verify
+
+### AASHTO Green Book, 7th edition (2018)
 
 | Entry | What to confirm | Where |
 |---|---|---|
 | Passing sight distance | The 13 design values 400–1,400 ft (20–80 mph) | Table 3-4 |
 | Superelevation runoff | Recommended portion of runoff on the tangent by speed and lanes rotated (currently the 60–90 % range only) | Table 3-18 |
-| Spiral curve transition | Desirable spiral lengths (currently 2.94·V) and the "maximum radius for use of a spiral" thresholds | Tables 3-19, 3-20 |
-| Cross slope, minimum grade, clearance | Vertical clearance by facility type and the 6 in resurfacing allowance; lane width statements | §3.4 (structures), §4.2, §4.3 |
+| Spiral curve transition | Desirable spiral lengths (currently 2.94·V) and the maximum radius for use of a spiral | Tables 3-19, 3-20 |
 
-## TDOT Roadway Design Guidelines
-
-| Entry | What to confirm | Where |
-|---|---|---|
-| All TDOT citations | Chapter titles and section numbering for Chapters 3–6; only Chapter 2 sections (2-302, 2-302.05, 2-601) are cited by number | Table of contents, Chapters 2–6 |
-| Slopes and barrier warrants | Critical-fill exemption (100 ft, 10 ft drop) and the 35 mph low-speed urban rule | §2-302.05 |
-| Taper length | Whether TDOT breaks the taper formula at 45 mph as the MUTCD does | Chapter 2 lane transitions; §2-601 |
-| Planned entries | Standard design criteria tables by functional class (design speed, lane and shoulder width, maximum grade by terrain, clearance) | Chapter 2 design criteria tables |
-
-## TDOT standard drawings
+### TDOT Roadway Design Guidelines and standard drawings
 
 | Entry | What to confirm | Where |
 |---|---|---|
-| Clear zone distance; clear zone table | All 20 cells × 5 slope columns of Table A, including the backslope columns (added from memory of RDG Table 3-1) | S-CZ-1 Table A, rev. 06-28-2019 |
-| Curve correction K_cz table | All 12 radius rows × 7 speed columns of Table B | S-CZ-1 Table B |
-| Clear zone distance (note) | 4 ft minimum / 6 ft enhanced lateral offset on curbed streets posted ≤ 45 mph | S-CZ-1 Figure B |
-| Length of need; runout table | Runout rows at 20, 25, 35, 45, 55 and 65 mph (TDOT interpolations); confirm the 80 mph row exists; "begins at post 3" | S-PL-1 Table B and layout notes, rev. 03-01-2023 |
+| All TDOT citations | Chapters 4, 5 and 6 are not yet mapped or used | Chapters 4–6 |
+| Planned entries | Design speed, lane and shoulder width, maximum grade by terrain, minimum K by classification | RD-CTS and RD18-TS standard drawing series (Chapter 2 defers to them) |
+| Superelevation tables | Rates and runoff lengths by speed and radius; spiral thresholds | RD18-SE and RD18-LR series |
 
-## AASHTO Roadside Design Guide, 4th edition (2011)
-
-| Entry | What to confirm | Where |
-|---|---|---|
-| Slopes and barrier warrants | Shy-line offsets by speed; suggested flare rates inside and beyond the shy line | Tables 5-7, 5-9 |
-| Runout table | The 30, 40, 50, 60, 70 and 80 mph rows (believed to be the revised 2011 values) | Table 5-10(b) |
-
-## MUTCD, 11th edition (2023)
+### AASHTO Roadside Design Guide, 4th edition (2011)
 
 | Entry | What to confirm | Where |
 |---|---|---|
-| Taper length | Section and table numbers for L = WS²/60 and L = WS (Part 6 was renumbered in the 11th edition) | Part 6 taper criteria table |
-| Street crossings | Section number for the 3.5 ft/s pedestrian clearance speed | Chapter 4I (pedestrian signals) |
+| Barrier type selection and guardrail placement | Shy-line offsets by speed; suggested flare rates inside and beyond the shy line | Tables 5-7, 5-9 |
 
-## PROWAG, final rule (August 2023)
+### MUTCD, 11th edition (2023)
 
 | Entry | What to confirm | Where |
 |---|---|---|
-| Curb ramps | Sub-section numbers for clear width, flared sides and grade breaks; 15 ft length limit wording | R304 |
+| Lane drop | TDOT Table 2-4 cites the 2009 MUTCD Table 2C-4; confirm the 11th edition table number and that Condition A values are unchanged | §2C.05 |
+| Street crossings | Section number for the 3.5 ft/s pedestrian clearance speed | Part 4 pedestrian signals |
+
+### PROWAG, final rule (August 2023)
+
+| Entry | What to confirm | Where |
+|---|---|---|
+| Curb ramps | Sub-section numbers for clear width, flared sides and grade breaks | R304 |
 | Detectable warnings | 6–8 in setback from the curb line; sub-section numbers | R305.2 |
-| Street crossings and signals | 2 in pushbutton size; refuge island length; 30 × 48 in clear space | R209, R306, R403 |
+| Street crossings and signals | 2 in pushbutton size; refuge island wording | R209, R306 |
 | Ramps, stairs and handrails | Stair riser 4–7 in and tread 11 in limits; nosing projection | R408 |
 | Accessible on-street parking | The count table (1–25: 1 … 151–200: 6; over 200: 4 %) | R214 |
 
@@ -59,5 +58,5 @@ Formulas and the values computed from them (SSD, K, R_min, ISD, DSD, curve eleme
 
 1. Open the source and compare the printed value with the registry in `src/criteria.js`.
 2. Correct the value if needed and run `npm test`.
-3. Remove the `verify: true` flag in the registry and the `unverified` text on the entry in `src/entries/*.js`.
-4. Delete the row here.
+3. Remove the `unverified` text on the entry in `src/entries/*.js`.
+4. Move the row to the "Checked" table above.

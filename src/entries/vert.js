@@ -9,7 +9,7 @@ export default [
   {
     id: 'kvalues', kind: 'formula', topic: 'vert', title: 'Vertical curve K and minimum length',
     aliases: ['K value', 'crest', 'sag', 'rate of vertical curvature', 'minimum curve length', '3-41', '3-42', '3-43', '3-44', 'headlight'],
-    cite: ['gb346'],
+    cite: ['gb346', 'tdot220002'],
     eq: ['L = K·A   (K = length per percent of A)', 'Crest, S < L:   L = A·S² / 2158   →   K = S² / 2158   (Eq. 3-41)', 'Crest, S > L:   L = 2·S − 2158 / A   (Eq. 3-42)',
       'Sag, S < L:   L = A·S² / (400 + 3.5·S)   →   K = S² / (400 + 3.5·S)   (Eq. 3-43)', 'Sag, S > L:   L = 2·S − (400 + 3.5·S) / A   (Eq. 3-44)', 'Sag comfort:   K = V² / 46.5', 'Appearance:   L_min = 3·V'],
     vars: [speedVar, { k: 'type', label: 'Curve type', options: [{ value: 'crest', label: 'Crest' }, { value: 'sag', label: 'Sag' }], value: 'crest' },
@@ -46,8 +46,8 @@ export default [
   },
   {
     id: 'vcgeom', kind: 'formula', topic: 'vert', title: 'Vertical curve geometry (parabola)',
-    aliases: ['PVC', 'PVI', 'PVT', 'high point', 'low point', 'turning point', 'elevation on curve', 'external', 'middle ordinate vertical'],
-    cite: ['gb346'],
+    aliases: ['PVC', 'PVI', 'PVT', 'high point', 'low point', 'turning point', 'elevation on curve', 'external', 'middle ordinate vertical', 'Figure 2-4'],
+    cite: ['gb346', 'tdot220002'],
     eq: ['y = y_PVC + (g1/100)·x + (A/(200·L))·x²   (x from PVC)', 'x_turn = −g1·L / A   (high or low point, where the grade is zero)', 'E = A·L / 800   (offset from PVI to curve)', 'PVC = PVI − L/2;   PVT = PVI + L/2'],
     vars: [{ k: 'g1', label: 'Grade in g1', unit: '%', value: 3, min: -15, max: 15, step: 0.1 }, { k: 'g2', label: 'Grade out g2', unit: '%', value: -2, min: -15, max: 15, step: 0.1 },
       { k: 'L', label: 'Curve length L', unit: 'ft', value: 600, min: 10, max: 5000, step: 10 },
@@ -66,7 +66,8 @@ export default [
       else out.push({ label: 'High/low point', value: 'Not within the curve', note: 'grades do not change sign' });
       return out;
     },
-    sketch: 'vcurve'
+    sketch: 'vcurve',
+    notes: ['TDOT Figure 2-4 (§2-200.02) states the same relations: E = A·L/800 and y = 4·D²·E/L² = D²·A/(200·L), with D the distance from the nearest PC or PT. TDOT refers vertical curve design to the AASHTO Green Book Chapter 3 and takes maximum grades and minimum K from the RD18-TS series.']
   },
   {
     id: 'sagUnder', kind: 'formula', topic: 'vert', title: 'Sag curve under a structure (sight distance to the undercrossing)',

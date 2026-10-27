@@ -2,7 +2,7 @@
 import { C } from '../criteria.js';
 import * as f from '../formulas.js';
 
-const G = C.gb;
+const G = C.gb, T = C.tdot2;
 const speedVar = { k: 'V', label: 'Design speed', unit: 'mph', ctx: 'V', min: 15, max: 80, step: 5 };
 const emaxOpts = [{ value: -2, label: 'Normal crown, adverse (−2 %)' }, { value: 0, label: 'Flat (0 %)' }, { value: 2, label: '2 %' }, ...G.emax.map((e) => ({ value: e, label: `${e} %` }))];
 
@@ -21,7 +21,8 @@ export default [
         { label: 'Design R_min (rounded to 5 ft, 10 ft above 1,000)', value: f.rminDesign(v.V, v.e / 100), unit: 'ft', strong: true }
       ];
     },
-    notes: ['Normal crown against the curve uses e = −2 % (adverse crown). The 7th edition applies the same f values to low-speed urban streets.', 'Radii above the minimum take their superelevation from the Method 5 distribution (Tables 3-8 to 3-12) for rural and high-speed urban, or Method 2 (Figure 3-14) for low-speed urban streets.']
+    notes: ['Normal crown against the curve uses e = −2 % (adverse crown). The 7th edition applies the same f values to low-speed urban streets.', 'Radii above the minimum take their superelevation from the Method 5 distribution (Tables 3-8 to 3-12) for rural and high-speed urban, or Method 2 (Figure 3-14) for low-speed urban streets.',
+      `TDOT practice (§2-101.01): desirable e_max ${T.emaxUrban} ft/ft on urban projects and ${T.emaxRural} ft/ft on rural projects; rates and runoff lengths come from the RD18-SE and RD18-LR series; a rate that cannot be met needs a Design Exception.`]
   },
   {
     id: 'rminTable', kind: 'table', topic: 'horiz', title: 'Design minimum radius by speed and e_max',
@@ -110,23 +111,51 @@ export default [
       ];
     },
     unverified: 'Table 3-20 desirable lengths are reproduced here as 2.94·V; the printed table differs by a foot at some speeds.',
-    notes: ['Spirals are considered where the radius is below the "maximum radius for use of a spiral" in Table 3-19 (not yet entered). TDOT practice on spirals is in RDG Chapter 2.']
+    notes: ['Spirals are considered where the radius is below the "maximum radius for use of a spiral" in Table 3-19 (not yet entered).',
+      `TDOT (§2-101.01): spirals are recommended for curves at ${T.spiralSpeed} mph or more with superelevation of ${T.spiralE * 100} % or more; the RD18-LR tables say when. In the urban e_max 0.04 example (Table 2-1) the first 50 mph radius needing a spiral is ${f.fmt0(T.spiralExampleRadius)} ft. Spirals may be omitted on isolated bridge replacements, intersection improvements and widenings where they give no benefit.`]
   },
   {
-    id: 'taper', kind: 'formula', topic: 'horiz', title: 'Taper length (lane shift, merge, turn-lane approach)',
-    aliases: ['taper', 'lane transition', 'merging taper', 'shifting taper', 'WS²/60', 'WS'], cite: ['mutcd6', 'gbTurn'],
-    eq: ['L = W·S² / 60   (S ≤ 40 mph)', 'L = W·S   (S ≥ 45 mph)'],
-    vars: [{ k: 'W', label: 'Lateral offset W', unit: 'ft', value: 12, min: 1, max: 24, step: 0.5 }, { ...speedVar, label: 'Speed S (design or posted)' }],
+    id: 'taper', kind: 'formula', topic: 'horiz', title: 'Taper length (approach, bay and departure tapers)',
+    aliases: ['taper', 'lane transition', 'merging taper', 'approach taper', 'bay taper', 'departure taper', 'WS²/60', 'WS', 'WS/3', '2-602'], cite: ['tdot2602', 'tdot2601', 'mutcd3b09', 'gbTurn'],
+    eq: ['Approach taper:   L = W·S² / 60   (S < 45 mph)', 'Approach taper:   L = W·S   (S ≥ 45 mph)', 'Bay taper:   L = W·S / 3', 'Departure taper: begins at the end of the bay taper; rate no sharper than the approach taper'],
+    vars: [{ k: 'W', label: 'Width of offset W', unit: 'ft', value: 12, min: 1, max: 24, step: 0.5 }, { ...speedVar, label: 'Design speed S' }],
     compute: (v) => {
       const L = f.taper(v.W, v.V);
       return [
-        { label: 'Merging taper L', value: f.fmt0(L), unit: 'ft', strong: true },
-        { label: 'Rate', value: `${(L / v.W).toFixed(1)}:1` },
-        { label: 'Shifting taper (½ L)', value: f.fmt0(L / 2), unit: 'ft' },
-        { label: 'Shoulder taper (⅓ L)', value: f.fmt0(L / 3), unit: 'ft' }
+        { label: 'Approach taper L', value: f.fmt0(L), unit: 'ft', strong: true },
+        { label: 'Approach taper rate', value: `${(L / v.W).toFixed(1)}:1` },
+        { label: 'Bay taper W·S/3', value: f.fmt0((v.W * v.V) / 3), unit: 'ft', strong: true },
+        { label: 'MUTCD shifting taper (½ L)', value: f.fmt0(L / 2), unit: 'ft' },
+        { label: 'MUTCD shoulder taper (⅓ L)', value: f.fmt0(L / 3), unit: 'ft' }
       ];
     },
-    unverified: 'MUTCD 11th edition section and table numbers for the taper formulas have not been confirmed.',
-    notes: ['Turn-lane bay tapers are commonly 8:1 to 15:1 (GB §9.7); lane-drop tapers after an intersection follow TDOT RDG §2-601.']
+    notes: ['TDOT Figure 2-10: approach taper, bay taper, full-width turn lane. Turn-lane warrants and full-width length are in the TDOT Highway System Access Manual, Volume 3.', `Opposing left-turn lanes in medians up to ${T.medianLeftTurnAlignMax} ft wide are placed on the median centerline, directly opposite each other, with channelization striping; wider medians use offset left-turn lanes (§2-800.03).`]
+  },
+  {
+    id: 'laneDrop', kind: 'formula', topic: 'horiz', title: 'Lane drop after an intersection',
+    aliases: ['lane drop', 'lane reduction', 'X = 750 + d', 'advance placement', 'Table 2-4', 'Condition A', '2-601', 'lane ends sign'], cite: ['tdot2601', 'mutcd2c05', 'mutcd3b09'],
+    eq: ['X = 750 ft + d   (minimum lane length past the intersection before the taper begins)', 'L = W·S² / 60   (S < 45 mph)   or   L = W·S   (S ≥ 45 mph)'],
+    vars: [{ ...speedVar, label: 'Posted or 85th-percentile speed S' }, { k: 'W', label: 'Transition width W', unit: 'ft', value: 12, min: 1, max: 30, step: 0.5 }],
+    consts: [['750 ft', 'Distance from the intersection within which the Lane Ends sign is not visible to approaching traffic', ''], ['d', 'Condition A advance placement distance from Table 2-4 (MUTCD Table 2C-4)', ''], ['L', 'Taper length per MUTCD §3B.09', '']],
+    compute: (v) => {
+      const ld = f.laneDrop(v.V);
+      if (!ld) return [{ label: 'd', value: 'Not tabulated', note: 'Table 2-4 covers 20–75 mph' }];
+      const L = f.taper(v.W, v.V);
+      return [
+        { label: 'Advance placement d (Condition A)', value: ld.d, unit: 'ft' },
+        { label: 'Minimum lane length X = 750 + d', value: f.fmt0(ld.X), unit: 'ft', strong: true },
+        { label: 'Lane reduction taper L', value: f.fmt0(L), unit: 'ft', strong: true },
+        { label: 'Total from the intersection to the end of the taper', value: f.fmt0(ld.X + L), unit: 'ft' }
+      ];
+    },
+    notes: [`Worked example in §2-601: 55 mph posted, 30 ft to 12 ft transition (W = 18 ft): X = 750 + 990 = 1,740 ft and L = 55 × 18 = 990 ft.`, 'Condition B (deceleration to an advisory speed) uses the other columns of Table 2-4; the sign legibility adjustments are 180 ft for Condition A and 250 ft for Condition B.', 'Avoid lane drops on horizontal or vertical curves so drivers are on a tangent (§2-102.04). Ending the outside lane as a right-turn lane is subject to TDOT Signal Section approval.']
+  },
+  {
+    id: 'condATable', kind: 'table', topic: 'horiz', title: 'Advance placement distance, Condition A (Table 2-4)',
+    aliases: ['Table 2-4', 'Table 2C-4', 'advance placement', 'warning sign placement'], cite: ['tdot2601', 'mutcd2c05'],
+    cols: ['Posted or 85th-percentile speed (mph)', 'Condition A d (ft)', 'X = 750 + d (ft)'],
+    rows: () => Object.entries(T.condA).map(([s, d]) => [+s, d, 750 + d]),
+    keyIndex: 0,
+    notes: ['Condition A: speed reduction and lane changing in heavy traffic (Merge, Right Lane Ends). Based on a 14.0–14.5 s decision sight distance pre-maneuver time less 180 ft legibility distance. Add 100 ft for signs with less than 6 in legend or more than four words.']
   }
 ];
