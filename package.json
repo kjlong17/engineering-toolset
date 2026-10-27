@@ -1,0 +1,12 @@
+{
+  "name": "roadway-design-reference",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Roadway design reference: formulas, constants and design minimums from the AASHTO Green Book, TDOT Roadway Design Guidelines and PROWAG.",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}

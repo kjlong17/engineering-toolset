@@ -1,47 +1,60 @@
-# Civil Engineering Tools
+# Roadway Design Reference
 
-An engineering reference for street design. For the inputs you enter, each tool gives the standards-based design values for street geometry, roadside safety and stormwater, from the **Transportation & Street Technical Standards (TSTS), 2025 edition** (published by the City of Franklin, Tennessee), and the TDOT, AASHTO, MUTCD and FHWA criteria the Standards reference.
+A desk reference for design engineers and quality reviewers who know roadway design and need a quick answer to "what was that formula or constant?" and "what is the minimum at this design speed?". It covers geometric design, roadside safety and pedestrian facilities from the **AASHTO Green Book (7th ed., 2018)**, the **TDOT Roadway Design Guidelines (Chapters 2–6)**, the **AASHTO Roadside Design Guide** as adapted on TDOT standard drawings **S-CZ-1** and **S-PL-1**, and **PROWAG (2023 final rule)**.
 
-> Engineering reference only. It does not replace engineering judgment, a sealed design, or the approving agency's review. The adopted Standards and the approving agency's determinations govern.
->
-> Independent tool. Not affiliated with, produced by or endorsed by the City of Franklin, Tennessee.
+> Engineering reference only. It does not replace engineering judgment, a sealed design or the owner's review. Check every value against the cited source.
 
-## Tools
+## How it works
 
-| Tab | Card | Main sources |
-|---|---|---|
-| Alignment | Vertical curve: SSD, K, minimum length, PVC/PVT and high/low point | TSTS Table 2.3(2), §2.3.9; AASHTO GB §3.2.2, §3.4.6 |
-| Alignment | Horizontal curve: minimum radius, tangents, curve elements, sightline offset | TSTS Tables 2.3(2), 2.3(4), §2.3.8; AASHTO GB §3.3 |
-| Alignment | Grade, grade break and cross slope limits | TSTS Tables 2.3(2), 2.3(5), §2.3.8(7), §2.3.9 |
-| Intersections | Intersection sight distance | TSTS §2.3.10; AASHTO GB §9.5.3 |
-| Intersections | Turn lane need and length | TSTS Table 2.3(1), §2.3.13(8)–(10), §2.3.23(7); TDOT HSAM Vol. 3 Tables 3-11, 3-12 |
-| Intersections | Taper lengths | TSTS §2.3.11; TDOT HSAM Figs. 3-21, 3-22; MUTCD Table 2C-3 |
-| Intersections | Intersection and access spacing | TSTS Table 2.3(2), §2.3.13, §2.3.15, §2.3.16, §2.3.23 |
-| Cross section & access | Typical section widths, cul-de-sac, clearances | TSTS Typical Sections TS-1 to TS-7, Table 2.3(1), §2.3.7, §2.3.21 |
-| Cross section & access | Driveway dimensions and number allowed | TSTS §2.3.23, Tables 2.3(8), 2.3(9) |
-| Roadside safety | Clear zone, shielding need and length of need | TSTS §2.3.18–2.3.19, Ch. 7 §7.8; TDOT S-CZ-1, S-PL-1, RDG §2-302 |
-| Drainage | Design storm, allowable spread and gutter capacity | TSTS Table 3.1, §3.2.1(2), §3.2.2; FHWA HEC-22 |
-| Drainage | Storm sewer pipe size | TSTS §3.2.1(3), Ch. 7 §7.3; Manning |
+- **One global input: design speed.** Every speed-dependent entry follows it until you change the entry's own input. Tables highlight the row for the selected speed.
+- **Search first.** The search box matches titles, synonyms, variable symbols and section numbers ("K sag", "Rmin", "3.2.2", "R304", "clear zone"). Press `/` to focus it.
+- **Three kinds of entry.**
+  - *Formula*: the equation, each constant with its source, and a worked-values panel that shows the intermediate steps for the conditions you enter.
+  - *Table*: a lookup by speed, ADT or class, computed from the equations where the source is copyrighted.
+  - *Constants*: single values with citation (PROWAG dimensions, design constants, slope limits).
+- **Nothing plan-specific.** Entries take design conditions (speed, grade, radius, ADT), never a proposed value, and give no pass/fail result.
+- **Links reproduce the view.** The page address carries the design speed, search and topic; each entry has a Link button that copies a direct link to it.
+
+## Topics and entries
+
+| Topic | Entries |
+|---|---|
+| Design controls | AASHTO design constants; side friction f by speed; relative gradient Δ; cross slope, minimum grade, clearance |
+| Sight distance | SSD formula and table; decision sight distance; passing sight distance; intersection sight distance formula and table |
+| Horizontal alignment | Minimum radius formula and table by e_max; circular curve elements; horizontal sightline offset; superelevation runoff and runout; spiral length; taper length |
+| Vertical alignment | K and minimum length; K table; parabola geometry (PVC, PVT, high/low point); sag under a structure |
+| Roadside safety | Clear zone with curve correction; clear zone table; K_cz table; slopes and barrier warrants; length of need; runout length table |
+| Pedestrian (PROWAG) | Pedestrian access route; curb ramps and blended transitions; detectable warnings; crossings and signals; ramps, stairs and handrails; protruding objects; accessible on-street parking |
+
+Planned, not yet entered: TDOT standard design criteria tables by functional class (design speed, lane and shoulder width, maximum grade by terrain), Green Book maximum grades, Table 3-18 runoff on tangent, Table 3-19 spiral thresholds, intersection turn-lane and lane-drop criteria (TDOT RDG §2-601, HSAM), cross-section elements. Drainage is out of scope.
+
+## Verification
+
+Values transcribed from memory or from drawing text are marked **Unverified** on the entry and collected on the About page. [VERIFY.md](VERIFY.md) lists the document, table or figure needed to confirm each one.
 
 ## How it is built
 
-- Static HTML, CSS and JavaScript. No build step, no server code, no cookies, no analytics, no external requests (enforced by a Content Security Policy).
-- Each card takes design inputs and returns design values with their citations. It does not compare against a proposed design or give pass/fail results.
-- `js/criteria.js` is the single registry of design values, each with its source, section and edition. Cards read values from it; to move to a new edition, update this file.
-- `js/formulas.js` holds the calculations, each citing its equation source.
-- `js/cards/*.js` — one file per tool: inputs, design values, SVG diagram and basis notes.
-- AASHTO material is copyrighted: Green Book values are computed from the published equations and cited, not reproduced as tables. Roadside values are shown as adapted and published by TDOT.
+- Static HTML, CSS and ES-module JavaScript. No build step, no server code, no cookies, no analytics, no external requests (enforced by a Content Security Policy).
+- `src/criteria.js`: the registry of every constant and table, each with its source and edition. Entries and formulas read from it; to move to a new edition, change this file.
+- `src/formulas.js`: pure calculation functions, each citing its equation.
+- `src/entries/*.js`: one file per topic; each entry declares its kind, equation, variables, citations and notes.
+- `src/sketches.js`: static definition sketches that label the variables.
+- AASHTO material is copyrighted: Green Book and Roadside Design Guide values are computed from the published equations and cited by section, not reproduced as tables. TDOT drawings, TDOT guidelines and PROWAG are public.
 
 ## Run locally
 
-Serve this folder with any static web server (for example GitHub Pages, or `python -m http.server` from this folder) and open `index.html`. Opening the file straight from disk may be blocked by the page's Content Security Policy in some browsers.
+Serve the folder with any static server and open `index.html`:
+
+```
+npm run serve     # python3 -m http.server 8000
+```
+
+ES modules will not load from a `file://` URL.
 
 ## Tests
 
-Open `tests/formulas.test.html` through the same server. It checks the formulas against published design values (AASHTO stopping and intersection sight distance, K values, TSTS Table 2.3(2) radii, TDOT tables, and Manning and HEC-22 hand calculations).
+```
+npm test
+```
 
-## Before public release
-
-- Verify the TDOT values transcribed from drawing sheets: S-CZ-1 Tables A and B and the low-speed urban offsets, and the S-PL-1 runout lengths for 20, 25 and 35 mph. These are listed on the About tab.
-- Legal review of the terms-of-use text.
-- Accessibility check (axe or similar, plus keyboard and screen reader pass).
+Runs under Node's built-in test runner and checks the formulas against the published Green Book design values (SSD, crest and sag K for 15–80 mph, minimum radius, decision and intersection sight distance), curve elements, superelevation runoff, spiral lengths, tapers and the roadside lookups. The same suite runs in GitHub Actions on every push.
